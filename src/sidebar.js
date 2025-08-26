@@ -1,10 +1,20 @@
-import todoList from './todo-list';
+import todoList, { myTodoList } from './todo-list';
 import today from './today';
 import lastWeek from './lastWeek';
+
+
+//central storage
+let fetchTask = {
+    "Inbox": [],
+    "Today": [],
+    "Last Week": [],
+};
+
 
 function sidebar() {
 
     const todoListParent = document.getElementById("todo-list");
+
 
     const sidebarItem = document.createElement("div");
     sidebarItem.classList.add("sidebar__item");
@@ -21,7 +31,7 @@ function sidebar() {
         "Last Week": () => lastWeek(),
     };
 
-
+    
     sidebarItemList.forEach((item) => {
 
         const itemList = document.createElement("li");
@@ -40,6 +50,7 @@ function sidebar() {
                 link.addEventListener('click', (e) => {
                  e.preventDefault();
                  todoListParent.innerHTML = "";
+                 getTasks(link.textContent);
                  todoListParent.appendChild(renderPage());
                 });
         }
@@ -69,10 +80,16 @@ function projectUI() {
     return sidebarItem;
 }
 
+function getTasks(category) {
+    return fetchTask[category];
+}
+
+
+
+
 
 
 export default sidebar;
-
 export { projectUI };
 
 

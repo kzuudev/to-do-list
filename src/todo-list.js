@@ -7,8 +7,17 @@ import editIcon from '../assets/edit.svg';
 import exitIcon from '../assets/exit.svg';
 
 
-export let myTodoList = [];
+
+// export let myTodoList = [];
+// localStorage.setItem("tasks", JSON.stringify(myTodoList));
+// localStorage.getItem("tasks");
+
+export let myTodoList = JSON.parse(localStorage.getItem("tasks")) || [];
+
 let currentEditIndex = null;
+
+
+
 
 export class Task {
     constructor(title, description, priority, date) {
@@ -184,6 +193,8 @@ export function createTaskForm() {
 
 
 function todoList() {
+
+
     const todoListParent = document.createElement("div");
     todoListParent.classList.add("todo__list-item");
 
@@ -268,6 +279,7 @@ function handleCreateTask() {
     
     let newTask = new Task(title, description, priority, date);
     myTodoList.push(newTask);
+    localStorage.setItem("tasks", JSON.stringify(myTodoList));  
     console.log(myTodoList);
 
 
@@ -278,6 +290,7 @@ function handleCreateTask() {
 
 function handleDisplayTask(tasks) {
 
+  
    let task = "";
 
    todoListTaskItem.innerHTML = "";
@@ -327,17 +340,13 @@ function isDone() {
 
     document.querySelectorAll(".isDone").forEach((isCheck, index) => {
         isCheck.onclick = (e) => {
-            if(e.target.checked == false) {
-                isCheck.style.transform = "";
-                isCheck.style.transition = "";
-            }else {
-                console.log("Task is successfully done! Congrats!", e.target.checked);
+            console.log("Task is successfully done! Congrats!", e.target.checked);
                 isCheck.style.transform = "scale(1.05) translateY(-5px)";
                 isCheck.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
                 myTodoList.splice(index, 1);
                 handleDisplayTask(myTodoList);
+                localStorage.setItem("tasks", JSON.stringify(myTodoList));  
                 todoListParent.appendChild(addTaskBtn);  
-            }
         }
     });
 }
@@ -401,7 +410,7 @@ function handleEditTask(task) {
 
         // re-render tasks fresh
         handleDisplayTask(myTodoList);
-
+        localStorage.setItem("tasks", JSON.stringify(myTodoList));  
         inboxForm.style.display = "none";
         inboxForm.reset();
 
@@ -424,6 +433,7 @@ function handleRemoveTask() {
            myTodoList.splice(index, 1);
            handleDisplayTask(myTodoList);
            todoListParent.appendChild(addTaskBtn);  
+           localStorage.setItem("tasks", JSON.stringify(myTodoList));  
            inboxForm.reset();
         });
     });

@@ -19,6 +19,7 @@ const todayListItem = today();
 
 sidebarParent.appendChild(sidebarItem);
 sidebarParent.appendChild(projectList);
+
 todoListParent.appendChild(todoListItem);
 todayListParent.appendChild(todayListItem);
 
