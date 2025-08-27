@@ -278,178 +278,14 @@ function handleCreateTask() {
     let date =  dateTask.value;
     
     let newTask = new Task(title, description, priority, date);
-    myTodoList.push(newTask);
     localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+    myTodoList.push(newTask);
     console.log(myTodoList);
 
 
     inboxForm.style.display = "none";
     handleDisplayTask(myTodoList);
 }
-
-
-function handleDisplayTask(tasks) {
-
-  
-   let task = "";
-
-   todoListTaskItem.innerHTML = "";
-   todoListTask.innerHTML = "";
-   console.log(todoListTaskItem);
-
-
-    tasks.forEach((taskItem) => {
-        task += `
-        <div class="task__item">
-            <div class="task__item-title">
-                <input type="checkbox" class="isDone" />
-                <p>${taskItem.title}</p>
-            </div>
-
-            <div class="task__item-btn">
-                <button class="btn btn-details">Details</button>
-                <div>${format(parseISO(taskItem.date), "MMMM d, yyyy")}</div>
-
-                <button class="btn btn-edit">
-                    <img src="${editIcon}" alt="Edit">
-                </button>
-
-                <button class="btn btn-delete">
-                    <img src="${deleteIcon}" alt="Delete">
-                </button>
-            </div>
-
-            <div class="task-line"></div>
-        </div>
-             `;
-    });
-
-    todoListTaskItem.innerHTML = task;
-    todoListTask.appendChild(todoListTaskItem);
-    todoListParent.appendChild(todoListTask);
-
-    handleViewTask(tasks);
-    handleEditTask(tasks);
-    handleRemoveTask();
-    isDone();
-}
-
-function isDone() {
-
-    const isTaskDone = document.querySelectorAll(".task__item");
-
-    document.querySelectorAll(".isDone").forEach((isCheck, index) => {
-        isCheck.onclick = (e) => {
-            console.log("Task is successfully done! Congrats!", e.target.checked);
-                isCheck.style.transform = "scale(1.05) translateY(-5px)";
-                isCheck.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
-                myTodoList.splice(index, 1);
-                handleDisplayTask(myTodoList);
-                localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-                todoListParent.appendChild(addTaskBtn);  
-        }
-    });
-}
-
-
-inboxForm.addEventListener("submit",  function(event) {
-    event.preventDefault();
-    console.log("Form submitted");
-    handleCreateTask();
-    inboxForm.reset();
-    
-    if(myTodoList.length !== 0) {
-        addTaskBtn.style.display = "flex";
-        addTaskBtn.style.marginTop = "10px";
-        addTaskBtn.style.justifyContent = "flex-start";
-        taskBtn.style.backgroundColor = "white";
-        taskBtn.style.color = "rgb(158, 158, 158)";
-        addIcon.style.filter = "invert(19%) sepia(46%) saturate(6923%) hue-rotate(2deg) brightness(104%) contrast(73%)";
-        todoListParent.appendChild(todoListTask);  
-        todoListParent.appendChild(addTaskBtn);  
-    }
-});
-
-
-
-function handleEditTask(task) {
-
-    let isEditing = true;
-
-    editTaskDetails.appendChild(saveEditBtn);
-    editTaskDetails.appendChild(cancelEditBtn);
-    editDetails.appendChild(editTaskDetails);
-    inboxForm.appendChild(editDetails);
-
-    document.querySelectorAll(".btn-edit").forEach((editBtn, index) => {
-        editBtn.onclick = () => {   // <-- use .onclick instead of addEventListener
-            currentEditIndex = index;
-
-            inboxForm.style.display = "flex";
-            editDetails.style.display = "flex";
-            editTaskDetails.style.display = "flex";
-            inboxActions.style.display = "none";
-
-            // pre-fill values
-            titleTask.value = task[index].title;
-            descriptionTask.value = task[index].description;
-            priorityTask.value = task[index].priority;
-            dateTask.value = task[index].date;
-        };
-    });
-
-    saveEditBtn.onclick = () => {
-        let updatedTaskDetails = new Task(
-            titleTask.value,
-            descriptionTask.value,
-            priorityTask.value,
-            dateTask.value
-        );
-
-        myTodoList[currentEditIndex] = updatedTaskDetails;
-
-        // re-render tasks fresh
-        handleDisplayTask(myTodoList);
-        localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-        inboxForm.style.display = "none";
-        inboxForm.reset();
-
-        todoListParent.appendChild(addTaskBtn);
-    };
-
-    cancelEditBtn.onclick = () => {
-        inboxForm.style.display = "none";
-        inboxForm.reset();
-    };
-    
-}
-
-
-
-function handleRemoveTask() {
-
-    document.querySelectorAll(".btn-delete").forEach((button, index) => {
-        button.addEventListener("click", () => {
-           myTodoList.splice(index, 1);
-           handleDisplayTask(myTodoList);
-           todoListParent.appendChild(addTaskBtn);  
-           localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-           inboxForm.reset();
-        });
-    });
-
-
-    if(myTodoList.length === 0) {
-        addTaskBtn.style.display = "flex";
-        addTaskBtn.style.marginTop = "10rem";
-        addTaskBtn.style.justifyContent = "center";
-        taskBtn.style.backgroundColor = "rgb(220, 60, 34)";
-        taskBtn.style.color = "white";
-        addIcon.style.filter = "brightness(0) invert(1)";
-    }
-
-}
-
 
 function handleViewTask(item) {
     
@@ -497,6 +333,173 @@ function handleViewTask(item) {
     todoListParent.appendChild(taskModal);
 }
 
+
+function handleDisplayTask(tasks) {
+
+  
+   let task = "";
+
+   todoListTaskItem.innerHTML = "";
+   todoListTask.innerHTML = "";
+   console.log(todoListTaskItem);
+
+
+    tasks.forEach((taskItem) => {
+        task += `
+        <div class="task__item">
+            <div class="task__item-title">
+                <input type="checkbox" class="isDone" />
+                <p>${taskItem.title}</p>
+            </div>
+
+            <div class="task__item-btn">
+                <button class="btn btn-details">Details</button>
+                <div>${format(parseISO(taskItem.date), "MMMM d, yyyy")}</div>
+
+                <button class="btn btn-edit">
+                    <img src="${editIcon}" alt="Edit">
+                </button>
+
+                <button class="btn btn-delete">
+                    <img src="${deleteIcon}" alt="Delete">
+                </button>
+            </div>
+
+            <div class="task-line"></div>
+        </div>
+             `;
+    });
+
+    todoListTaskItem.innerHTML = task;
+    todoListTask.appendChild(todoListTaskItem);
+    todoListParent.appendChild(todoListTask);
+
+    handleViewTask(tasks);
+    handleEditTask(tasks);
+    handleDeleteTask();
+    isDone();
+}
+
+
+function handleEditTask(task) {
+
+    let isEditing = true;
+
+    editTaskDetails.appendChild(saveEditBtn);
+    editTaskDetails.appendChild(cancelEditBtn);
+    editDetails.appendChild(editTaskDetails);
+    inboxForm.appendChild(editDetails);
+
+    document.querySelectorAll(".btn-edit").forEach((editBtn, index) => {
+        editBtn.onclick = () => {  
+            currentEditIndex = index;
+
+            inboxForm.style.display = "flex";
+            editDetails.style.display = "flex";
+            editTaskDetails.style.display = "flex";
+            inboxActions.style.display = "none";
+
+            // pre-fill values
+            titleTask.value = task[index].title;
+            descriptionTask.value = task[index].description;
+            priorityTask.value = task[index].priority;
+            dateTask.value = task[index].date;
+        };
+    });
+
+    saveEditBtn.onclick = () => {
+        let updatedTaskDetails = new Task(
+            titleTask.value,
+            descriptionTask.value,
+            priorityTask.value,
+            dateTask.value
+        );
+
+        myTodoList[currentEditIndex] = updatedTaskDetails;
+
+        // re-render tasks fresh
+        localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+        handleDisplayTask(myTodoList);
+        inboxForm.style.display = "none";
+        inboxForm.reset();
+
+        todoListParent.appendChild(addTaskBtn);
+    };
+
+    cancelEditBtn.onclick = () => {
+        inboxForm.style.display = "none";
+        inboxForm.reset();
+    };
+    
+}
+
+
+function handleDeleteTask() {
+
+    document.querySelectorAll(".btn-delete").forEach((button, index) => {
+        button.addEventListener("click", () => {
+           myTodoList.splice(index, 1);
+           localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+           handleDisplayTask(myTodoList);
+           todoListParent.appendChild(addTaskBtn);  
+           inboxForm.reset();
+        });
+    });
+
+
+    if(myTodoList.length === 0) {
+        addTaskBtn.style.display = "flex";
+        addTaskBtn.style.marginTop = "10rem";
+        addTaskBtn.style.justifyContent = "center";
+        taskBtn.style.backgroundColor = "rgb(220, 60, 34)";
+        taskBtn.style.color = "white";
+        addIcon.style.filter = "brightness(0) invert(1)";
+    }
+
+}
+
+
+inboxForm.addEventListener("submit",  function(event) {
+    event.preventDefault();
+    console.log("Form submitted");
+    handleCreateTask();
+    inboxForm.reset();
+    
+    if(myTodoList.length !== 0) {
+        addTaskBtn.style.display = "flex";
+        addTaskBtn.style.marginTop = "10px";
+        addTaskBtn.style.justifyContent = "flex-start";
+        taskBtn.style.backgroundColor = "white";
+        taskBtn.style.color = "rgb(158, 158, 158)";
+        addIcon.style.filter = "invert(19%) sepia(46%) saturate(6923%) hue-rotate(2deg) brightness(104%) contrast(73%)";
+        todoListParent.appendChild(todoListTask);  
+        todoListParent.appendChild(addTaskBtn);  
+    }
+});
+
+
+function isDone() {
+
+    const isTaskDone = document.querySelectorAll(".task__item");
+
+    document.querySelectorAll(".isDone").forEach((isCheck, index) => {
+        isCheck.onclick = (e) => {
+            console.log("Task is successfully done! Congrats!", e.target.checked);
+                isCheck.style.transform = "scale(1.05) translateY(-5px)";
+                isCheck.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
+                myTodoList.splice(index, 1);
+                localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+                handleDisplayTask(myTodoList);
+                todoListParent.appendChild(addTaskBtn);  
+        }
+    });
+}
+
+cancelTaskBtn.addEventListener("click", () => {
+    inboxForm.reset();
+    inboxForm.style.display = "none";
+    addTaskBtn.style.display = "flex";
+});
 
 
 return todoListParent;

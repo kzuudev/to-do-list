@@ -1,4 +1,4 @@
-import { isToday, parse, isWithinInterval, subDays, format } from 'date-fns';
+import { isToday, parse, isWithinInterval, subDays, format, parseISO } from 'date-fns';
 import { myTodoList } from './todo-list.js';
 import deleteIcon from '../assets/delete.svg';
 import editIcon from '../assets/edit.svg';
@@ -9,7 +9,7 @@ import { da } from 'date-fns/locale';
 
 
 
-
+let myTodoTodayList = JSON.parse(localStorage.getItem("todayTasks")) || [];
 
 function today() {
     let currentEditIndex = null;
@@ -82,13 +82,64 @@ function today() {
             let date =  dateTask.value;
             
             let newTodayTask = new Task(title, description, priority, date);
-            myTodoList.push(newTodayTask);
-            console.log(myTodoList);
+            localStorage.setItem("todayTasks", JSON.stringify(myTodoTodayList));
+            myTodoTodayList.push(newTodayTask);
+            console.log(myTodoTodayList);
         
         
             inboxForm.style.display = "none";
-            handleDisplayTask(myTodoList);
+            handleDisplayTask(myTodoTodayList);
     }
+
+    function handleViewTask(item) {
+        
+
+        let viewTaskDetails = "";
+        
+            // const viewTaskModal = document.createElement("div");
+            // viewTaskModal.classList.add("task__modal-view");
+        
+            const viewTaskInfo = document.createElement("div");
+            viewTaskInfo.classList.add("task__modal-info")
+        
+            document.querySelectorAll(".btn-details").forEach((detailsBtn, index) => {
+                detailsBtn.addEventListener("click", () => {
+                    viewTaskDetails = `
+                        <div class="today-task__modal-item">
+        
+                                <div class="btn task__btn-exit">
+                                    <button class="btn btn-exit">
+                                        <img src="${exitIcon}" alt="Exit">
+                                    </button>
+                                </div>
+        
+                                <div class="today-task__modal-title">
+                                    <p>${item[index].title}</p>
+                                </div>
+                        
+                            <div class="today task__modal-text">
+                                <p>Description:  ${item[index].description}</p>
+                                <p>Priority:  ${item[index].priority}</p>
+                                <p>Due Date:   ${item[index].date}</p>
+                            </div>
+                        </div>
+                    `
+                    todayTaskModal.style.display = "flex";
+        
+                    viewTaskInfo.innerHTML = viewTaskDetails;
+        
+                    document.querySelector(".btn-exit").addEventListener("click", () => {
+                        todayTaskModal.style.display = "none";
+                        viewTaskInfo.innerHTML = "";
+                    });
+                });
+        
+            });
+        
+            todayTaskModal.appendChild(viewTaskInfo);
+        
+            todayList.appendChild(todayTaskModal);
+        }
 
     function handleEditTask(task) {
 
@@ -124,10 +175,10 @@ function today() {
                 dateTask.value
             );
     
-            myTodoList[currentEditIndex] = updatedTaskDetails;
-    
+            myTodoTodayList[currentEditIndex] = updatedTaskDetails;
+            localStorage.setItem("todayTasks", JSON.stringify(myTodoTodayList));
             // re-render tasks fresh
-            handleDisplayTask(myTodoList);
+            handleDisplayTask(myTodoTodayList);
     
             inboxForm.style.display = "none";
             inboxForm.reset();
@@ -147,15 +198,16 @@ function today() {
 
         document.querySelectorAll(".btn-delete").forEach((button, index) => {
             button.addEventListener("click", () => {
-               myTodoList.splice(index, 1);
-               handleDisplayTask(myTodoList);
+               myTodoTodayList.splice(index, 1);
+               localStorage.setItem("todayTasks", JSON.stringify(myTodoTodayList));
+               handleDisplayTask(myTodoTodayList);
                todayList.appendChild(addTaskBtn);  
                inboxForm.reset();
             });
         });
     
     
-        if(myTodoList.length === 0) {
+        if(myTodoTodayList.length === 0) {
             addTaskBtn.style.display = "flex";
             addTaskBtn.style.marginTop = "10rem";
             addTaskBtn.style.justifyContent = "center";
@@ -166,77 +218,35 @@ function today() {
 
     }
 
-    function handleViewTask(item) {
-        
-
-    let viewTaskDetails = "";
-    
-        // const viewTaskModal = document.createElement("div");
-        // viewTaskModal.classList.add("task__modal-view");
-    
-        const viewTaskInfo = document.createElement("div");
-        viewTaskInfo.classList.add("task__modal-info")
-    
-        document.querySelectorAll(".btn-details").forEach((detailsBtn, index) => {
-            detailsBtn.addEventListener("click", () => {
-                viewTaskDetails = `
-                    <div class="task__modal-item">
-    
-                            <div class="btn task__btn-exit">
-                                <button class="btn btn-exit">
-                                    <img src="${exitIcon}" alt="Exit">
-                                </button>
-                            </div>
-    
-                            <div class="task__modal-title">
-                                <p>${item[index].title}</p>
-                            </div>
-                    
-                        <div class="task__modal-text">
-                            <p>Description:  ${item[index].description}</p>
-                            <p>Priority:  ${item[index].priority}</p>
-                            <p>Due Date:   ${item[index].date}</p>
-                        </div>
-                    </div>
-                `
-                todayTaskModal.style.display = "flex";
-    
-                viewTaskInfo.innerHTML = viewTaskDetails;
-    
-                document.querySelector(".btn-exit").addEventListener("click", () => {
-                    todayTaskModal.style.display = "none";
-                    viewTaskInfo.innerHTML = "";
-                });
-            });
-    
-        });
-    
-        todayTaskModal.appendChild(viewTaskInfo);
-    
-        todayList.appendChild(todayTaskModal);
-    }
 
     function handleDisplayTask(task) {
 
         let todayTask = "";
         let allTodayTask = "";
 
-        const isTodayDate = myTodoList.filter((task) =>
-            isToday(parse(task.date, 'MMMM d, yyyy', new Date()))
+        // const sample = [
+        //     {title: "Task 1", date: "August 27, 2025"},
+        //     {title: "Task 2", date: "August 27, 2025"},
+        // ];
+
+        const isTodayTask = myTodoList.filter((task) =>
+            isToday(parseISO(task.date))
         );
-    
-        console.log(isTodayDate);
-    
+
+        
+        console.log(isTodayTask);    
+
         task.forEach((taskToday) => {
             todayTask += `
                 <div class="task__item">
                     <div class="task__item-title">
+                        <input type="checkbox" class="isDone" />
                         <p>${taskToday.title}</p>
                     </div>
     
                     <div class="task__item-btn">
                         <button class="btn btn-details">Details</button>
-                        <div>${taskToday.date}</div>
+                        <div>${format(parseISO(taskToday.date), "MMMM d, yyyy")}</div>
     
                         <button class="btn btn-edit">
                             <img src="${editIcon}" alt="Edit">
@@ -252,16 +262,17 @@ function today() {
             `;
         });
 
-        isTodayDate.forEach((allTaskToday) => {
+        isTodayTask.forEach((todayTaskItem) => {
             allTodayTask += `
                 <div class="task__item">
                     <div class="task__item-title">
-                        <p>${allTaskToday.title}</p>
+                        <input type="checkbox" class="isDone" />
+                        <p>${todayTaskItem.title}</p>
                     </div>
     
                     <div class="task__item-btn">
                         <button class="btn btn-details">Details</button>
-                        <div>${allTaskToday.date}</div>
+                        <div>${format(parseISO(todayTaskItem.date), "MMMM d, yyyy")}</div>
     
                         <button class="btn btn-edit">
                             <img src="${editIcon}" alt="Edit">
@@ -282,9 +293,10 @@ function today() {
         todayList.appendChild(allTodayListItem);
         todayList.appendChild(todayListItem);
 
-        handleEditTask(myTodoList);
+        handleEditTask(task);
+        handleViewTask(task) 
         handleDeleteTask();
-        handleViewTask(myTodoList) 
+        isDone()
     }
 
 
@@ -303,22 +315,27 @@ function today() {
         todayList.appendChild(addTaskBtn);  
     });
 
+    function isDone() {
+
+        document.querySelectorAll(".isDone").forEach((isCheck, index) => {
+            isCheck.onclick = (e) => {
+                console.log("Task is successfully done! Congrats!", e.target.checked);
+                    isCheck.style.transform = "scale(1.05) translateY(-5px)";
+                    isCheck.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
+                    myTodoList.splice(index, 1);
+                    localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+                    handleDisplayTask(myTodoList);
+                    todoListParent.appendChild(addTaskBtn);  
+            }
+        });
+    }
+
     cancelTaskBtn.addEventListener("click", () => {
         inboxForm.reset();
         inboxForm.style.display = "none";
         addTaskBtn.style.display = "flex";
     });
     
-
-
-
-
-
-
-
-
-   
-
 
     return todayList;
 }

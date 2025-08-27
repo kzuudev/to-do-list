@@ -315,7 +315,7 @@ a {
     width: 100%;
 }
 
-.task__modal-item {
+.task__modal-item, .today-task__modal-item {
     width: 100%;
     padding-block: 1rem;
     padding-inline: 0.85rem;

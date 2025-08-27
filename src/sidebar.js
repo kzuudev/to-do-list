@@ -14,7 +14,7 @@ let fetchTask = {
 function sidebar() {
 
     const todoListParent = document.getElementById("todo-list");
-
+    
 
     const sidebarItem = document.createElement("div");
     sidebarItem.classList.add("sidebar__item");
@@ -31,7 +31,16 @@ function sidebar() {
         "Last Week": () => lastWeek(),
     };
 
-    
+    const pageSections = {} // store the actual DOM nodes
+
+    //render the pages all once
+    for(let key in renderPages) {
+        const section = renderPages[key]() //return function and the DOM element that page creates.
+        todoListParent.appendChild(section);
+        section.style.display = "none";
+        pageSections[key] = section; 
+    }
+
     sidebarItemList.forEach((item) => {
 
         const itemList = document.createElement("li");
@@ -44,16 +53,20 @@ function sidebar() {
         itemList.appendChild(link);       
         sidebarItem.appendChild(itemList);
 
-        //the condition check the if the title is existing in sideBarItemList (item.title)
-        if(link.textContent === item.title) {
-                let renderPage =  renderPages[link.textContent];
-                link.addEventListener('click', (e) => {
-                 e.preventDefault();
-                 todoListParent.innerHTML = "";
-                 getTasks(link.textContent);
-                 todoListParent.appendChild(renderPage());
-                });
-        }
+
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                for(let page in pageSections) {
+                    pageSections[page].style.display = "none";
+                }
+
+                pageSections[link.textContent].style.display = "block";
+                 
+                
+            });
+        
+
+
     });
 
     return sidebarItem;
@@ -92,21 +105,3 @@ function getTasks(category) {
 export default sidebar;
 export { projectUI };
 
-
-
-  // if(link.textContent === "Inbox") {
-        //     link.addEventListener('click', () => {
-        //          todoListParent.innerHTML = "";
-        //          todoListParent.appendChild(todoList());
-        //     });
-        // }else if(link.textContent === "Today") {
-        //     link.addEventListener('click', () => {
-        //         todoListParent.innerHTML = "";
-        //         todoListParent.appendChild(today());
-        //    });
-        // }else {
-        //     link.addEventListener('click', () => {
-        //         todoListParent.innerHTML = "";
-        //         todoListParent.appendChild(lastWeek());
-        //    });
-        // }
