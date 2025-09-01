@@ -1,5 +1,5 @@
 
-import { isToday, parseISO, isWithinInterval, subDays, format, isValid} from 'date-fns';
+import {  parseISO, format } from 'date-fns';
 import { ca, da } from 'date-fns/locale';
 import './style.css'
 import deleteIcon from '../assets/delete.svg';
@@ -12,12 +12,9 @@ import exitIcon from '../assets/exit.svg';
 // localStorage.setItem("tasks", JSON.stringify(myTodoList));
 // localStorage.getItem("tasks");
 
-export let myTodoList = JSON.parse(localStorage.getItem("tasks")) || [];
+export let myTodoList = [] || JSON.parse(localStorage.getItem("tasks"));
 
 let currentEditIndex = null;
-
-
-
 
 export class Task {
     constructor(title, description, priority, date) {
@@ -36,7 +33,7 @@ export function createTaskForm() {
     formContainer.classList.add("todo__form-wrapper"); 
 
     const title = document.createElement("h1");
-    title.classList.add("todo__title");
+    title.classList.add("todo__title-headings");
     title.textContent = "Inbox"
 
     const inboxForm = document.createElement("form");
@@ -100,32 +97,50 @@ export function createTaskForm() {
     const priorityLabel = document.createElement("label");
     priorityLabel.classList.add("inbox__priority");
     priorityLabel.setAttribute("for", "task-priority");
-    priorityLabel.textContent = "Priority"
+
 
     const priorityTask = document.createElement("select");
     priorityTask.classList.add("inbox__select");
+
     priorityTask.id = "task-select";
     priorityTask.name = "task-select";
     priorityTask.required = true;
 
+ 
+    const placeholderOption = document.createElement("option");
+    placeholderOption.textContent = "Priority";
+    placeholderOption.value = "";
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    priorityTask.appendChild(placeholderOption);
 
     priorityOptions.forEach(option => {
         const options = document.createElement("option");
         options.classList.add("todo__select-option");
-
         options.textContent = option.text;
+    
+        if (option.text === "Low") {
+            options.style.color = "blue";  
+        } else if (option.text === "Medium") {
+            options.style.color = "yellow";  
+        } else {
+            options.style.color = "red";  
+        }
+    
         priorityTask.appendChild(options);
     });
+    
 
 
     //date input
     const dateLabel = document.createElement("label");
     dateLabel.classList.add("inbox__label");
     dateLabel.setAttribute("for", "task-date");
-    dateLabel.textContent = "Date"
+    
 
     const dateTask = document.createElement("input");
     dateTask.classList.add("inbox__date");
+    dateTask.placeholder = "Date";
     dateTask.type = "date";
     dateTask.id = "task-date";
     dateTask.name = "task-date";
@@ -278,16 +293,15 @@ function handleCreateTask() {
     let date =  dateTask.value;
     
     let newTask = new Task(title, description, priority, date);
-    localStorage.setItem("tasks", JSON.stringify(myTodoList));  
     myTodoList.push(newTask);
-    console.log(myTodoList);
-
-
-    inboxForm.style.display = "none";
+    localStorage.setItem("tasks", JSON.stringify(myTodoList));  
     handleDisplayTask(myTodoList);
+    inboxForm.reset();
+    inboxForm.style.display = "none";
+  
 }
 
-function handleViewTask(item) {
+function handleViewTask(tasks) {
     
     let viewTaskDetails = "";
 
@@ -298,7 +312,6 @@ function handleViewTask(item) {
         detailsBtn.addEventListener("click", () => {
             viewTaskDetails = `
                 <div class="task__modal-item">
-
                         <div class="btn task__btn-exit">
                             <button class="btn btn-exit">
                                 <img src="${exitIcon}" alt="Exit">
@@ -306,13 +319,13 @@ function handleViewTask(item) {
                         </div>
 
                         <div class="task__modal-title">
-                            <p>${item[index].title}</p>
+                            <p>${tasks[index].title}</p>
                         </div>
                 
                     <div class="task__modal-text">
-                        <p>Description:  ${item[index].description}</p>
-                        <p>Priority:  ${item[index].priority}</p>
-                        <p>Due Date:   ${item[index].date}</p>
+                        <p>Description:  ${tasks[index].description}</p>
+                        <p>Priority:  ${tasks[index].priority}</p>
+                        <p>Due Date:   ${tasks[index].date}</p>
                     </div>
                 </div>
             `
@@ -333,57 +346,7 @@ function handleViewTask(item) {
     todoListParent.appendChild(taskModal);
 }
 
-
-function handleDisplayTask(tasks) {
-
-  
-   let task = "";
-
-   todoListTaskItem.innerHTML = "";
-   todoListTask.innerHTML = "";
-   console.log(todoListTaskItem);
-
-
-    tasks.forEach((taskItem) => {
-        task += `
-        <div class="task__item">
-            <div class="task__item-title">
-                <input type="checkbox" class="isDone" />
-                <p>${taskItem.title}</p>
-            </div>
-
-            <div class="task__item-btn">
-                <button class="btn btn-details">Details</button>
-                <div>${format(parseISO(taskItem.date), "MMMM d, yyyy")}</div>
-
-                <button class="btn btn-edit">
-                    <img src="${editIcon}" alt="Edit">
-                </button>
-
-                <button class="btn btn-delete">
-                    <img src="${deleteIcon}" alt="Delete">
-                </button>
-            </div>
-
-            <div class="task-line"></div>
-        </div>
-             `;
-    });
-
-    todoListTaskItem.innerHTML = task;
-    todoListTask.appendChild(todoListTaskItem);
-    todoListParent.appendChild(todoListTask);
-
-    handleViewTask(tasks);
-    handleEditTask(tasks);
-    handleDeleteTask();
-    isDone();
-}
-
-
 function handleEditTask(task) {
-
-    let isEditing = true;
 
     editTaskDetails.appendChild(saveEditBtn);
     editTaskDetails.appendChild(cancelEditBtn);
@@ -393,17 +356,18 @@ function handleEditTask(task) {
     document.querySelectorAll(".btn-edit").forEach((editBtn, index) => {
         editBtn.onclick = () => {  
             currentEditIndex = index;
-
+            let taskIndex = parseInt(editBtn.dataset.index);
+            
             inboxForm.style.display = "flex";
             editDetails.style.display = "flex";
             editTaskDetails.style.display = "flex";
             inboxActions.style.display = "none";
 
             // pre-fill values
-            titleTask.value = task[index].title;
-            descriptionTask.value = task[index].description;
-            priorityTask.value = task[index].priority;
-            dateTask.value = task[index].date;
+            titleTask.value = task[taskIndex].title;
+            descriptionTask.value = task[taskIndex].description;
+            priorityTask.value = task[taskIndex].priority;
+            dateTask.value = task[taskIndex].date;
         };
     });
 
@@ -422,7 +386,6 @@ function handleEditTask(task) {
         handleDisplayTask(myTodoList);
         inboxForm.style.display = "none";
         inboxForm.reset();
-
         todoListParent.appendChild(addTaskBtn);
     };
 
@@ -432,7 +395,6 @@ function handleEditTask(task) {
     };
     
 }
-
 
 function handleDeleteTask() {
 
@@ -457,6 +419,58 @@ function handleDeleteTask() {
     }
 
 }
+
+function handleDisplayTask(tasks) {
+
+  
+   let task = "";
+
+   todoListTaskItem.innerHTML = "";
+   todoListTask.innerHTML = "";
+   console.log(todoListTaskItem);
+
+
+    tasks.forEach((taskItem, i) => {
+        task += `
+        <div class="task__item">
+            <div class="task__item-title">
+                <input type="checkbox" class="isDone" data-index="${i}" />
+                <p>${taskItem.title}</p>
+            </div>
+
+            <div class="task__item-btn">
+                <button class="btn btn-details">Details</button>
+                <div>${format(parseISO(taskItem.date), "MMMM d, yyyy")}</div>
+
+                <button class="btn btn-edit data-source="inbox" data-index="${i}">
+                    <img src="${editIcon}" alt="Edit">
+                </button>
+
+                <button class="btn btn-delete">
+                    <img src="${deleteIcon}" alt="Delete">
+                </button>
+            </div>
+
+            <div class="task-line"></div>
+        </div>
+             `;
+    });
+
+    todoListTaskItem.innerHTML = task;
+    todoListTask.appendChild(todoListTaskItem);
+    todoListParent.appendChild(todoListTask);
+
+    handleViewTask(tasks);
+    handleEditTask(tasks);
+    handleDeleteTask();
+    isDone();
+}
+
+
+
+
+
+
 
 
 inboxForm.addEventListener("submit",  function(event) {
@@ -511,3 +525,7 @@ return todoListParent;
 
 
 export default todoList;
+
+
+
+

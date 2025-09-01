@@ -1,4 +1,5 @@
 import { isToday, parse, isWithinInterval, subDays, format, parseISO } from 'date-fns';
+import './style.css'
 import { myTodoList } from './todo-list.js';
 import deleteIcon from '../assets/delete.svg';
 import editIcon from '../assets/edit.svg';
@@ -9,11 +10,13 @@ import { da } from 'date-fns/locale';
 
 
 
-let myTodoTodayList = JSON.parse(localStorage.getItem("todayTasks")) || [];
+let myTodoTaskList =  JSON.parse(localStorage.getItem("tasks")) || myTodoList;
+let taskIndex;
 
 function today() {
     let currentEditIndex = null;
-    
+    let currentEditTask = null;
+
     const title = document.createElement("h1");
     title.classList.add("todo__title");
     title.textContent = "Today";
@@ -33,7 +36,7 @@ function today() {
     const { inboxForm, inboxActions, titleTask, descriptionTask, priorityTask, dateTask, cancelTaskBtn } = createTaskForm();
 
     const addTaskBtn = document.createElement("div");
-    addTaskBtn.classList.add("todo__add-task");
+    addTaskBtn.classList.add("today__add-task");
     
     const addIcon = document.createElement("div");
     addIcon.classList.add("add__task-icon");
@@ -82,31 +85,26 @@ function today() {
             let date =  dateTask.value;
             
             let newTodayTask = new Task(title, description, priority, date);
-            localStorage.setItem("todayTasks", JSON.stringify(myTodoTodayList));
-            myTodoTodayList.push(newTodayTask);
-            console.log(myTodoTodayList);
-        
-        
+            myTodoList.push(newTodayTask);
+            localStorage.setItem("tasks", JSON.stringify(myTodoList));
+            handleDisplayTask(myTodoList);
+            inboxForm.reset();
             inboxForm.style.display = "none";
-            handleDisplayTask(myTodoTodayList);
+          
     }
 
-    function handleViewTask(item) {
+    function handleViewTask(tasks) {
         
-
         let viewTaskDetails = "";
-        
-            // const viewTaskModal = document.createElement("div");
-            // viewTaskModal.classList.add("task__modal-view");
-        
+   
             const viewTaskInfo = document.createElement("div");
             viewTaskInfo.classList.add("task__modal-info")
         
-            document.querySelectorAll(".btn-details").forEach((detailsBtn, index) => {
+            document.querySelectorAll(".btn-details").forEach((detailsBtn) => {
                 detailsBtn.addEventListener("click", () => {
+                    taskIndex = parseInt(detailsBtn.dataset.index);
                     viewTaskDetails = `
                         <div class="today-task__modal-item">
-        
                                 <div class="btn task__btn-exit">
                                     <button class="btn btn-exit">
                                         <img src="${exitIcon}" alt="Exit">
@@ -114,13 +112,13 @@ function today() {
                                 </div>
         
                                 <div class="today-task__modal-title">
-                                    <p>${item[index].title}</p>
+                                    <p>${tasks[taskIndex].title}</p>
                                 </div>
                         
                             <div class="today task__modal-text">
-                                <p>Description:  ${item[index].description}</p>
-                                <p>Priority:  ${item[index].priority}</p>
-                                <p>Due Date:   ${item[index].date}</p>
+                                <p>Description:  ${tasks[taskIndex].description}</p>
+                                <p>Priority:  ${tasks[taskIndex].priority}</p>
+                                <p>Due Date:   ${tasks[taskIndex].date}</p>
                             </div>
                         </div>
                     `
@@ -143,71 +141,71 @@ function today() {
 
     function handleEditTask(task) {
 
-        let isEditing = true;
-    
         editTaskDetails.appendChild(saveEditBtn);
-        editTaskDetails.appendChild(cancelEditBtn);
-        editDetails.appendChild(editTaskDetails);
-        inboxForm.appendChild(editDetails);
-    
-        document.querySelectorAll(".btn-edit").forEach((editBtn, index) => {
-            editBtn.onclick = () => {  
-                currentEditIndex = index;
-    
-                inboxForm.style.display = "flex";
-                editDetails.style.display = "flex";
-                editTaskDetails.style.display = "flex";
-                inboxActions.style.display = "none";
-    
-                // pre-fill values
-                titleTask.value = task[index].title;
-                descriptionTask.value = task[index].description;
-                priorityTask.value = task[index].priority;
-                dateTask.value = task[index].date;
+            editTaskDetails.appendChild(cancelEditBtn);
+            editDetails.appendChild(editTaskDetails);
+            inboxForm.appendChild(editDetails);
+        
+
+            document.querySelectorAll(".btn-edit").forEach((editBtn, index) => {
+                editBtn.onclick = () => {  
+                    currentEditIndex = index;
+                    taskIndex = parseInt(editBtn.dataset.index);
+                    
+                    inboxForm.style.display = "flex";
+                    editDetails.style.display = "flex";
+                    editTaskDetails.style.display = "flex";
+                    inboxActions.style.display = "none";
+        
+                    // pre-fill values
+                    titleTask.value = task[taskIndex].title;
+                    descriptionTask.value = task[taskIndex].description;
+                    priorityTask.value = task[taskIndex].priority;
+                    dateTask.value = task[taskIndex].date;
+                };
+            });
+        
+            saveEditBtn.onclick = () => {
+                let updatedTaskDetails = new Task(
+                    titleTask.value,
+                    descriptionTask.value,
+                    priorityTask.value,
+                    dateTask.value
+                );
+        
+                myTodoList[taskIndex] = updatedTaskDetails;
+        
+                // re-render tasks fresh
+                localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+                handleDisplayTask(myTodoList);
+                inboxForm.style.display = "none";
+                inboxForm.reset();
+                todayList.appendChild(addTaskBtn);
             };
-        });
-    
-        saveEditBtn.onclick = () => {
-            let updatedTaskDetails = new Task(
-                titleTask.value,
-                descriptionTask.value,
-                priorityTask.value,
-                dateTask.value
-            );
-    
-            myTodoTodayList[currentEditIndex] = updatedTaskDetails;
-            localStorage.setItem("todayTasks", JSON.stringify(myTodoTodayList));
-            // re-render tasks fresh
-            handleDisplayTask(myTodoTodayList);
-    
-            inboxForm.style.display = "none";
-            inboxForm.reset();
-    
-            todayList.appendChild(addTaskBtn);
-        };
-    
-        cancelEditBtn.onclick = () => {
-            inboxForm.style.display = "none";
-            inboxForm.reset();
-        };
+        
+            cancelEditBtn.onclick = () => {
+                inboxForm.style.display = "none";
+                inboxForm.reset();
+            };
+            
         
     }
     
 
     function handleDeleteTask() {
 
-        document.querySelectorAll(".btn-delete").forEach((button, index) => {
+        document.querySelectorAll(".btn-delete").forEach((button) => {
             button.addEventListener("click", () => {
-               myTodoTodayList.splice(index, 1);
-               localStorage.setItem("todayTasks", JSON.stringify(myTodoTodayList));
-               handleDisplayTask(myTodoTodayList);
+               myTodoList.splice(taskIndex, 1);
+               localStorage.setItem("tasks", JSON.stringify(myTodoList));
+               handleDisplayTask(myTodoList);
                todayList.appendChild(addTaskBtn);  
                inboxForm.reset();
             });
         });
     
     
-        if(myTodoTodayList.length === 0) {
+        if(myTodoList.length === 0) {
             addTaskBtn.style.display = "flex";
             addTaskBtn.style.marginTop = "10rem";
             addTaskBtn.style.justifyContent = "center";
@@ -222,21 +220,16 @@ function today() {
     function handleDisplayTask(task) {
 
         let todayTask = "";
-        let allTodayTask = "";
+        todayListItem.innerHTML = "";
 
-        // const sample = [
-        //     {title: "Task 1", date: "August 27, 2025"},
-        //     {title: "Task 2", date: "August 27, 2025"},
-        // ];
+        // const isTodayTask = myTodoList.filter((task) =>
+        //     isToday(parseISO(task.date))
+        // );
 
-        const isTodayTask = myTodoList.filter((task) =>
-            isToday(parseISO(task.date))
-        );
+        // const todayTasks = getTodayTasks();
 
-        
-        console.log(isTodayTask);    
 
-        task.forEach((taskToday) => {
+        task.forEach((taskToday, i) => {
             todayTask += `
                 <div class="task__item">
                     <div class="task__item-title">
@@ -245,10 +238,10 @@ function today() {
                     </div>
     
                     <div class="task__item-btn">
-                        <button class="btn btn-details">Details</button>
+                        <button class="btn btn-details" data-index="${i}">Details</button>
                         <div>${format(parseISO(taskToday.date), "MMMM d, yyyy")}</div>
     
-                        <button class="btn btn-edit">
+                        <button class="btn btn-edit" data-source="today" data-index="${i}">
                             <img src="${editIcon}" alt="Edit">
                         </button>
     
@@ -262,35 +255,33 @@ function today() {
             `;
         });
 
-        isTodayTask.forEach((todayTaskItem) => {
-            allTodayTask += `
-                <div class="task__item">
-                    <div class="task__item-title">
-                        <input type="checkbox" class="isDone" />
-                        <p>${todayTaskItem.title}</p>
-                    </div>
+        // todayTasks.forEach((todayTaskItem, i) => {
+        //     allTodayTask += `
+        //         <div class="task__item">
+        //             <div class="task__item-title">
+        //                 <input type="checkbox" class="isDone" />
+        //                 <p>${todayTaskItem.title}</p>
+        //             </div>
     
-                    <div class="task__item-btn">
-                        <button class="btn btn-details">Details</button>
-                        <div>${format(parseISO(todayTaskItem.date), "MMMM d, yyyy")}</div>
+        //             <div class="task__item-btn">
+        //                 <button class="btn btn-details">Details</button>
+        //                 <div>${format(parseISO(todayTaskItem.date), "MMMM d, yyyy")}</div>
     
-                        <button class="btn btn-edit">
-                            <img src="${editIcon}" alt="Edit">
-                        </button>
+        //                 <button class="btn btn-edit" data-source="inbox" data-index="${i}">
+        //                     <img src="${editIcon}" alt="Edit">
+        //                 </button>
     
-                        <button class="btn btn-delete">
-                            <img src="${deleteIcon}" alt="Delete">
-                        </button>
-                    </div>
+        //                 <button class="btn btn-delete">
+        //                     <img src="${deleteIcon}" alt="Delete">
+        //                 </button>
+        //             </div>
     
-                    <div class="task-line"></div>
-                </div>
-            `;
-        });
+        //             <div class="task-line"></div>
+        //         </div>
+        //     `;
+        // });
     
         todayListItem.innerHTML = todayTask;
-        allTodayListItem.innerHTML = allTodayTask;
-        todayList.appendChild(allTodayListItem);
         todayList.appendChild(todayListItem);
 
         handleEditTask(task);
@@ -299,6 +290,12 @@ function today() {
         isDone()
     }
 
+
+    function getTodayTasks() {
+        return myTodoList.filter(task =>
+            isToday(parseISO(task.date))
+          );
+    }
 
     inboxForm.addEventListener("submit",  function(event) {
         event.preventDefault();
@@ -318,14 +315,13 @@ function today() {
     function isDone() {
 
         document.querySelectorAll(".isDone").forEach((isCheck, index) => {
-            isCheck.onclick = (e) => {
-                console.log("Task is successfully done! Congrats!", e.target.checked);
-                    isCheck.style.transform = "scale(1.05) translateY(-5px)";
-                    isCheck.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
-                    myTodoList.splice(index, 1);
-                    localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-                    handleDisplayTask(myTodoList);
-                    todoListParent.appendChild(addTaskBtn);  
+            isCheck.onclick = () => {
+                isCheck.style.transform = "scale(1.05) translateY(-5px)";
+                isCheck.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
+                myTodoList.splice(index, 1);
+                localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+                handleDisplayTask(myTodoList);
+                todayList.appendChild(addTaskBtn);  
             }
         });
     }

@@ -65,10 +65,12 @@ a {
     color: black;
 }
 
-
+select {
+    -moz-appearance: none;
+   
+}
   
   
-
 .wrapper {
     display: flex;
     gap: 2rem;
@@ -110,7 +112,7 @@ a {
     margin-inline: 10rem;
 }
 
-.todo__add-task {
+.todo__add-task, .today__add-task {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -163,6 +165,21 @@ a {
     border: none;
 }
 
+.inbox__select {
+    padding: .45em;
+    background-color: var(--white);
+    border: 1px solid black;
+    border-radius: .25em;
+}
+
+.inbox__select:hover {
+    background-color: var(--gray-100);
+}
+
+.inbox__date {
+    padding: .35em;
+}
+
 .inbox__meta {
     display: flex;
     gap: .75em;
@@ -180,6 +197,8 @@ a {
     border-radius: .45em;
     background-color: var(--red-100);
 }
+
+
 
 .todo__save-task:hover {
     background-color: var(--red);
@@ -308,8 +327,6 @@ a {
     box-shadow: 0 4px 12px 4px rgba(0, 0, 0, 0.25);
     gap: 1rem;
 }
-
-
 
 .task__modal-info {
     width: 100%;
