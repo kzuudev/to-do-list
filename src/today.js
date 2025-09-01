@@ -196,6 +196,7 @@ function today() {
 
         document.querySelectorAll(".btn-delete").forEach((button) => {
             button.addEventListener("click", () => {
+               taskIndex = parseInt(button.dataset.index);
                myTodoList.splice(taskIndex, 1);
                localStorage.setItem("tasks", JSON.stringify(myTodoList));
                handleDisplayTask(myTodoList);
@@ -233,7 +234,7 @@ function today() {
             todayTask += `
                 <div class="task__item">
                     <div class="task__item-title">
-                        <input type="checkbox" class="isDone" />
+                        <input type="checkbox" class="isDone" data-index="${i}" />
                         <p>${taskToday.title}</p>
                     </div>
     
@@ -245,7 +246,7 @@ function today() {
                             <img src="${editIcon}" alt="Edit">
                         </button>
     
-                        <button class="btn btn-delete">
+                        <button class="btn btn-delete" data-index="${i}">
                             <img src="${deleteIcon}" alt="Delete">
                         </button>
                     </div>
@@ -316,9 +317,10 @@ function today() {
 
         document.querySelectorAll(".isDone").forEach((isCheck, index) => {
             isCheck.onclick = () => {
+                taskIndex = parseInt(isCheck.dataset.index);
                 isCheck.style.transform = "scale(1.05) translateY(-5px)";
                 isCheck.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
-                myTodoList.splice(index, 1);
+                myTodoList.splice(taskIndex, 1);
                 localStorage.setItem("tasks", JSON.stringify(myTodoList));  
                 handleDisplayTask(myTodoList);
                 todayList.appendChild(addTaskBtn);  
