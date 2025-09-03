@@ -10,12 +10,13 @@ import { da } from 'date-fns/locale';
 
 
 
-let myTodoTaskList =  JSON.parse(localStorage.getItem("tasks")) || myTodoList;
+let myTodoTaskList = myTodoList;
+
 let taskIndex;
 
 function today() {
+  
     let currentEditIndex = null;
-    let currentEditTask = null;
 
     const title = document.createElement("h1");
     title.classList.add("todo__title");
@@ -84,12 +85,27 @@ function today() {
             let priority =  priorityTask.value;
             let date =  dateTask.value;
             
+            // if(myTodoList.length > 0) {
+            //     let newTodayTask = new Task(title, description, priority, date);
+            //     myTodoList.push(newTodayTask);
+            //     localStorage.setItem("tasks", JSON.stringify(myTodoList));
+            //     handleDisplayTask(myTodoList);
+            // }else {
+            //     let newTodayTask = new Task(title, description, priority, date);
+            //     myTodoList.push(newTodayTask);
+            //     localStorage.setItem("tasks", JSON.stringify(myTodoList));
+            //     handleDisplayTask(myTodoList);
+            //     inboxForm.reset();
+            //     inboxForm.style.display = "none";
+            // }
+
             let newTodayTask = new Task(title, description, priority, date);
             myTodoList.push(newTodayTask);
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
             handleDisplayTask(myTodoList);
             inboxForm.reset();
             inboxForm.style.display = "none";
+
           
     }
 
@@ -223,13 +239,6 @@ function today() {
         let todayTask = "";
         todayListItem.innerHTML = "";
 
-        // const isTodayTask = myTodoList.filter((task) =>
-        //     isToday(parseISO(task.date))
-        // );
-
-        // const todayTasks = getTodayTasks();
-
-
         task.forEach((taskToday, i) => {
             todayTask += `
                 <div class="task__item">
@@ -256,31 +265,7 @@ function today() {
             `;
         });
 
-        // todayTasks.forEach((todayTaskItem, i) => {
-        //     allTodayTask += `
-        //         <div class="task__item">
-        //             <div class="task__item-title">
-        //                 <input type="checkbox" class="isDone" />
-        //                 <p>${todayTaskItem.title}</p>
-        //             </div>
     
-        //             <div class="task__item-btn">
-        //                 <button class="btn btn-details">Details</button>
-        //                 <div>${format(parseISO(todayTaskItem.date), "MMMM d, yyyy")}</div>
-    
-        //                 <button class="btn btn-edit" data-source="inbox" data-index="${i}">
-        //                     <img src="${editIcon}" alt="Edit">
-        //                 </button>
-    
-        //                 <button class="btn btn-delete">
-        //                     <img src="${deleteIcon}" alt="Delete">
-        //                 </button>
-        //             </div>
-    
-        //             <div class="task-line"></div>
-        //         </div>
-        //     `;
-        // });
     
         todayListItem.innerHTML = todayTask;
         todayList.appendChild(todayListItem);
@@ -288,19 +273,76 @@ function today() {
         handleEditTask(task);
         handleViewTask(task) 
         handleDeleteTask();
-        isDone()
+        isDone();
     }
 
 
     function getTodayTasks() {
-        return myTodoList.filter(task =>
+
+        let allTodayTask = '';
+        todayListItem.innerHTML = "";
+
+         // Load all tasks from localStorage (safe fallback to [])
+         let storedTasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+        const isTodayTask = storedTasks.filter((task) =>
             isToday(parseISO(task.date))
-          );
+        );
+
+        if(isTodayTask.length > 0) {
+            isTodayTask.forEach((todayTaskItem, i) => {
+                // const matchIndex = storedTasks.findIndex(task => task.id === todayTaskItem.id);
+                taskIndex = 
+                allTodayTask += `
+                    <div class="task__item">
+                        <div class="task__item-title">
+                            <input type="checkbox" class="isDone" data-index="${i}" />
+                            <p>${todayTaskItem.title}</p>
+                        </div>
+        
+                        <div class="task__item-btn">
+                            <button class="btn btn-details" data-index="${i}">Details</button>
+                            <div>${format(parseISO(todayTaskItem.date), "MMMM d, yyyy")}</div>
+        
+                            <button class="btn btn-edit" data-source="inbox" data-index="${i}">
+                                <img src="${editIcon}" alt="Edit">
+                            </button>
+        
+                            <button class="btn btn-delete" data-index="${i}">
+                                <img src="${deleteIcon}" alt="Delete">
+                            </button>
+                        </div>
+        
+                        <div class="task-line"></div>
+                    </div>
+                `;
+            });
+    
+            todayListItem.innerHTML = allTodayTask;
+            todayList.appendChild(todayListItem);
+            addTaskBtn.style.display = "flex";
+            addTaskBtn.style.marginTop = "10px";
+            addTaskBtn.style.justifyContent = "flex-start";
+            taskBtn.style.backgroundColor = "white";
+            taskBtn.style.color = "rgb(158, 158, 158)";
+            addIcon.style.filter = "invert(19%) sepia(46%) saturate(6923%) hue-rotate(2deg) brightness(104%) contrast(73%)";
+            todayList.appendChild(todayListItem);  
+            todayList.appendChild(addTaskBtn);  
+
+            // handleEditTask(storedTasks);
+            // handleViewTask(storedTasks) 
+            // handleDeleteTask();
+            // isDone()
+        }
+
+       
+        
+        return storedTasks;
     }
 
+function handleSubmit() {
     inboxForm.addEventListener("submit",  function(event) {
         event.preventDefault();
-        console.log("Form submitted");
         handleCreateTask()
         inboxForm.reset();
         addTaskBtn.style.display = "flex";
@@ -312,10 +354,12 @@ function today() {
         todayList.appendChild(todayListItem);  
         todayList.appendChild(addTaskBtn);  
     });
+}
+
 
     function isDone() {
 
-        document.querySelectorAll(".isDone").forEach((isCheck, index) => {
+        document.querySelectorAll(".isDone").forEach((isCheck) => {
             isCheck.onclick = () => {
                 taskIndex = parseInt(isCheck.dataset.index);
                 isCheck.style.transform = "scale(1.05) translateY(-5px)";
@@ -334,7 +378,9 @@ function today() {
         addTaskBtn.style.display = "flex";
     });
     
-
+  
+    handleSubmit();
+    getTodayTasks();
     return todayList;
 }
 
