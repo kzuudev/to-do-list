@@ -8,11 +8,7 @@ import exitIcon from '../assets/exit.svg';
 
 
 
-// export let myTodoList = [];
-// localStorage.setItem("tasks", JSON.stringify(myTodoList));
-// localStorage.getItem("tasks");
-
-export let myTodoList = [] || JSON.parse(localStorage.getItem("tasks"));
+export let myTodoList = JSON.parse(localStorage.getItem("tasks")) || [];
 
 let currentEditIndex = null;
 
@@ -325,7 +321,7 @@ function handleViewTask(tasks) {
                     <div class="task__modal-text">
                         <p>Description:  ${tasks[index].description}</p>
                         <p>Priority:  ${tasks[index].priority}</p>
-                        <p>Due Date:   ${tasks[index].date}</p>
+                        <p>Due Date:   ${format(parseISO(tasks[index].date), "MMMM d, yyyy")}</p>
                     </div>
                 </div>
             `
@@ -356,8 +352,9 @@ function handleEditTask(task) {
     document.querySelectorAll(".btn-edit").forEach((editBtn, index) => {
         editBtn.onclick = () => {  
             currentEditIndex = index;
-            let taskIndex = parseInt(editBtn.dataset.index);
-            
+            let taskId = Number(editBtn.dataset.id);
+            const taskIndex = myTodoList.findIndex(task => task.id === taskId);
+
             inboxForm.style.display = "flex";
             editDetails.style.display = "flex";
             editTaskDetails.style.display = "flex";
@@ -398,15 +395,20 @@ function handleEditTask(task) {
 
 function handleDeleteTask() {
 
-    document.querySelectorAll(".btn-delete").forEach((button, index) => {
-        button.addEventListener("click", () => {
-           myTodoList.splice(index, 1);
-           localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-           handleDisplayTask(myTodoList);
-           todoListParent.appendChild(addTaskBtn);  
-           inboxForm.reset();
+
+    document.querySelectorAll(".btn-delete").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const taskId = e.currentTarget.dataset.id;
+             // find the index of the task
+            const index = myTodoList.findIndex(task => task.id == taskId);
+            myTodoList.splice(index, 1)
+            localStorage.setItem("tasks", JSON.stringify(myTodoList));
+            handleDisplayTask(myTodoList);
+            todoListParent.appendChild(addTaskBtn);  
+            inboxForm.reset();
         });
     });
+    
 
 
     if(myTodoList.length === 0) {
@@ -434,7 +436,7 @@ function handleDisplayTask(tasks) {
         task += `
         <div class="task__item">
             <div class="task__item-title">
-                <input type="checkbox" class="isDone" data-index="${i}" />
+                <input type="checkbox" class="isDone" data-id="${taskItem.id}" />
                 <p>${taskItem.title}</p>
             </div>
 
@@ -442,11 +444,11 @@ function handleDisplayTask(tasks) {
                 <button class="btn btn-details">Details</button>
                 <div>${format(parseISO(taskItem.date), "MMMM d, yyyy")}</div>
 
-                <button class="btn btn-edit data-source="inbox" data-index="${i}">
+                <button class="btn btn-edit data-source="inbox" data-id="${taskItem.id}">
                     <img src="${editIcon}" alt="Edit">
                 </button>
 
-                <button class="btn btn-delete">
+                <button class="btn btn-delete" data-id="${taskItem.id}">
                     <img src="${deleteIcon}" alt="Delete">
                 </button>
             </div>
@@ -465,11 +467,6 @@ function handleDisplayTask(tasks) {
     handleDeleteTask();
     isDone();
 }
-
-
-
-
-
 
 
 
@@ -494,19 +491,17 @@ inboxForm.addEventListener("submit",  function(event) {
 
 function isDone() {
 
-    const isTaskDone = document.querySelectorAll(".task__item");
-
-    document.querySelectorAll(".isDone").forEach((isCheck, index) => {
+    document.querySelectorAll(".isDone").forEach((isCheck) => {
         isCheck.onclick = (e) => {
-            console.log("Task is successfully done! Congrats!", e.target.checked);
-                isCheck.style.transform = "scale(1.05) translateY(-5px)";
-                isCheck.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
-                myTodoList.splice(index, 1);
-                localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-                handleDisplayTask(myTodoList);
-                todoListParent.appendChild(addTaskBtn);  
-        }
+            const taskId = e.currentTarget.dataset.id;
+             // find the index of the task
+             const index = myTodoList.findIndex(task => task.id == taskId);
+             myTodoList.splice(index, 1);
+            localStorage.setItem("tasks", JSON.stringify(myTodoList));
+            handleDisplayTask(myTodoList);
+        };
     });
+    
 }
 
 cancelTaskBtn.addEventListener("click", () => {
