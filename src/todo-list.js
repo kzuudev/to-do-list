@@ -8,7 +8,7 @@ import exitIcon from '../assets/exit.svg';
 
 
 
-export let myTodoList = JSON.parse(localStorage.getItem("tasks")) || [];
+export let myTodoList = []  ||  JSON.parse(localStorage.getItem("tasks"));
 
 let currentEditIndex = null;
 
@@ -202,8 +202,7 @@ export function createTaskForm() {
 
 
 
-
-function todoList() {
+ function todoList() {
 
 
     const todoListParent = document.createElement("div");
@@ -279,7 +278,26 @@ function todoList() {
 
     
 
+    //it triggers when a task created from today section.
+    document.addEventListener("taskAdded", (e) => {
+        console.log("Today received new task:", e.detail.task);
+        localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+        handleDisplayTask(myTodoList); // auto-refresh today section
+        inboxForm.reset();
+        inboxForm.style.display = "none";
 
+        if(myTodoList.length !== 0) {
+            addTaskBtn.style.display = "flex";
+            addTaskBtn.style.marginTop = "10px";
+            addTaskBtn.style.justifyContent = "flex-start";
+            taskBtn.style.backgroundColor = "white";
+            taskBtn.style.color = "rgb(158, 158, 158)";
+            addIcon.style.filter = "invert(19%) sepia(46%) saturate(6923%) hue-rotate(2deg) brightness(104%) contrast(73%)";
+            todoListParent.appendChild(todoListTask);  
+            todoListParent.appendChild(addTaskBtn);  
+        }
+    });
+    
 
 function handleCreateTask() {
 
@@ -292,6 +310,12 @@ function handleCreateTask() {
     myTodoList.push(newTask);
     localStorage.setItem("tasks", JSON.stringify(myTodoList));  
     handleDisplayTask(myTodoList);
+
+    // ✅ Broadcast event that a task was created
+    document.dispatchEvent(new CustomEvent("taskAdded", {
+        detail: { task: newTask } // optional, you can pass the new task
+    }));
+
     inboxForm.reset();
     inboxForm.style.display = "none";
   
@@ -342,6 +366,7 @@ function handleViewTask(tasks) {
     todoListParent.appendChild(taskModal);
 }
 
+
 function handleEditTask(task) {
 
     editTaskDetails.appendChild(saveEditBtn);
@@ -352,8 +377,8 @@ function handleEditTask(task) {
     document.querySelectorAll(".btn-edit").forEach((editBtn, index) => {
         editBtn.onclick = () => {  
             currentEditIndex = index;
-            let taskId = Number(editBtn.dataset.id);
-            const taskIndex = myTodoList.findIndex(task => task.id === taskId);
+            // let taskId = Number(editBtn.dataset.id);
+            // const taskIndex = myTodoList.findIndex(task => task.id === taskId);
 
             inboxForm.style.display = "flex";
             editDetails.style.display = "flex";
@@ -361,10 +386,10 @@ function handleEditTask(task) {
             inboxActions.style.display = "none";
 
             // pre-fill values
-            titleTask.value = task[taskIndex].title;
-            descriptionTask.value = task[taskIndex].description;
-            priorityTask.value = task[taskIndex].priority;
-            dateTask.value = task[taskIndex].date;
+            titleTask.value = task[currentEditIndex].title;
+            descriptionTask.value = task[currentEditIndex].description;
+            priorityTask.value = task[currentEditIndex].priority;
+            dateTask.value = task[currentEditIndex].date;
         };
     });
 
@@ -441,7 +466,7 @@ function handleDisplayTask(tasks) {
             </div>
 
             <div class="task__item-btn">
-                <button class="btn btn-details">Details</button>
+                <button class="btn btn-details" data-id="${taskItem.id}">Details</button>
                 <div>${format(parseISO(taskItem.date), "MMMM d, yyyy")}</div>
 
                 <button class="btn btn-edit data-source="inbox" data-id="${taskItem.id}">
@@ -468,7 +493,20 @@ function handleDisplayTask(tasks) {
     isDone();
 }
 
+function isDone() {
 
+    document.querySelectorAll(".isDone").forEach((isCheck) => {
+        isCheck.onclick = (e) => {
+            const taskId = e.currentTarget.dataset.id;
+             // find the index of the task
+             const index = myTodoList.findIndex(task => task.id == taskId);
+             myTodoList.splice(index, 1);
+            localStorage.setItem("tasks", JSON.stringify(myTodoList));
+            handleDisplayTask(myTodoList);
+        };
+    });
+    
+}
 
 inboxForm.addEventListener("submit",  function(event) {
     event.preventDefault();
@@ -489,20 +527,6 @@ inboxForm.addEventListener("submit",  function(event) {
 });
 
 
-function isDone() {
-
-    document.querySelectorAll(".isDone").forEach((isCheck) => {
-        isCheck.onclick = (e) => {
-            const taskId = e.currentTarget.dataset.id;
-             // find the index of the task
-             const index = myTodoList.findIndex(task => task.id == taskId);
-             myTodoList.splice(index, 1);
-            localStorage.setItem("tasks", JSON.stringify(myTodoList));
-            handleDisplayTask(myTodoList);
-        };
-    });
-    
-}
 
 cancelTaskBtn.addEventListener("click", () => {
     inboxForm.reset();

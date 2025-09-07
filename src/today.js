@@ -10,11 +10,9 @@ import { da } from 'date-fns/locale';
 
 
 
-let myTodoTaskList = myTodoList ;
+let myTodoTaskList = myTodoList;
 
 
-   
-let taskIndex;
 
 function today() {
   
@@ -80,6 +78,15 @@ function today() {
         addTaskBtn.style.display = "none";
     });
 
+
+    //it triggers when a task (that has today date) created from inbox section.
+    document.addEventListener("taskAdded", (e) => {
+        console.log("Today received new task:", e.detail.task);
+        renderTodayTasks(); // auto-refresh today section
+    });
+    
+
+    
     function handleCreateTask() {
         let title = titleTask.value;
         let description = descriptionTask.value;
@@ -91,7 +98,13 @@ function today() {
         myTodoList.push(newTask);
         localStorage.setItem("tasks", JSON.stringify(myTodoList));
         handleDisplayTask(myTodoList);
-    
+        
+        // ✅ Broadcast event that a task was created
+        document.dispatchEvent(new CustomEvent("taskAdded", {
+            detail: { task: newTask } // optional, you can pass the new task
+        }));
+
+
         inboxForm.reset();
         inboxForm.style.display = "none";
     }
@@ -143,14 +156,16 @@ function today() {
             todayList.appendChild(todayTaskModal);
     }
 
+
     function handleEditTask(task) {
 
             editTaskDetails.appendChild(saveEditBtn);
             editTaskDetails.appendChild(cancelEditBtn);
             editDetails.appendChild(editTaskDetails);
             inboxForm.appendChild(editDetails);
-        
+
             let taskIndex;
+
             document.querySelectorAll(".btn-edit").forEach((editBtn, index) => {
                 editBtn.onclick = () => {  
                     currentEditIndex = index;
@@ -267,7 +282,7 @@ function today() {
         handleViewTask(task) 
         handleDeleteTask();
         isDone();
-        renderTodayTasks();
+        // renderTodayTasks();
     }
 
 
@@ -294,7 +309,11 @@ function today() {
 
         // Load all tasks from localStorage
         let storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        
+
+
+        // myTodoList.length = 0;         // clear old reference
+        // myTodoList.push(...storedTasks); // repopulate with stored tasks
+
         const isTodayTask = myTodoList.filter((task) =>
             isToday(parseISO(task.date))
         );
@@ -339,8 +358,8 @@ function today() {
             todayList.appendChild(addTaskBtn);  
 
              // re-attach events for today
-            handleEditTask(myTodoList);
-            handleViewTask(myTodoList);
+            handleEditTask(isTodayTask);
+            handleViewTask(isTodayTask);
             handleDeleteTask();
             isDone();
 
@@ -383,7 +402,7 @@ function today() {
         addTaskBtn.style.display = "flex";
     });
 
-    renderTodayTasks();
+   
     handleSubmit();
    
    
