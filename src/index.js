@@ -13,8 +13,8 @@ const todayListParent = document.getElementById("today-list");
 
 const sidebarItem = sidebar();
 const projectList = projectUI();
-const todoListItem = todoList();
-const todayListItem = today();
+// const todoListItem = todoList();
+// const todayListItem = today();
 
 
 sidebarParent.appendChild(sidebarItem);

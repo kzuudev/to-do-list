@@ -8,7 +8,7 @@ import exitIcon from '../assets/exit.svg';
 
 
 
-export let myTodoList = []  ||  JSON.parse(localStorage.getItem("tasks"));
+export let myTodoList = JSON.parse(localStorage.getItem("tasks")) || [];
 
 let currentEditIndex = null;
 
@@ -23,8 +23,11 @@ export class Task {
     }
 }
 
-export function createTaskForm() {
+export function createTaskForm(sectionName = "inbox") {
 
+    console.log("🔥 createTaskForm() called!"); 
+    console.trace("Called from:");
+    
     const formContainer = document.createElement("div");
     formContainer.classList.add("todo__form-wrapper"); 
 
@@ -32,10 +35,10 @@ export function createTaskForm() {
     title.classList.add("todo__title-headings");
     title.textContent = "Inbox"
 
-    const inboxForm = document.createElement("form");
-    inboxForm.classList.add("inbox__form");
-    inboxForm.setAttribute("method", "POST");
-    inboxForm.setAttribute("action", "");
+    const form = document.createElement("form");
+    form.classList.add(`${sectionName}__form`);
+    form.setAttribute("method", "POST");
+    form.setAttribute("action", "");
 
     const inboxTitleItem = document.createElement("div");
     inboxTitleItem.classList.add("todo__title");
@@ -114,7 +117,8 @@ export function createTaskForm() {
         const options = document.createElement("option");
         options.classList.add("todo__select-option");
         options.textContent = option.text;
-    
+        options.value = option.value;
+
         if (option.text === "Low") {
             options.style.color = "blue";  
         } else if (option.text === "Medium") {
@@ -145,11 +149,11 @@ export function createTaskForm() {
 
     // inboxTitleItem.appendChild(titleLabel);
     inboxTitleItem.appendChild(titleTask);
-    inboxForm.appendChild(inboxTitleItem);
+    form.appendChild(inboxTitleItem);
 
     // inboxDescriptionItem.appendChild(descriptionLabel);
     inboxDescriptionItem.appendChild(descriptionTask);
-    inboxForm.appendChild(inboxDescriptionItem);
+    form.appendChild(inboxDescriptionItem);
 
 
     // inboxSelectItem.appendChild(priorityLabel);
@@ -178,16 +182,16 @@ export function createTaskForm() {
     inboxMeta.appendChild(inboxDateItem);
     inboxMeta.appendChild(inboxSelectItem);
 
-    inboxForm.appendChild(inboxMeta);
-    inboxForm.appendChild(inboxActions);
+    form.appendChild(inboxMeta);
+    form.appendChild(inboxActions);
 
     formContainer.appendChild(title);
-    formContainer.appendChild(inboxForm);
+    formContainer.appendChild(form);
 
 
     return {
         formContainer,
-        inboxForm,
+        form,
         titleTask,
         descriptionTask,
         priorityTask,
@@ -204,7 +208,6 @@ export function createTaskForm() {
 
  function todoList() {
 
-
     const todoListParent = document.createElement("div");
     todoListParent.classList.add("todo__list-item");
 
@@ -216,7 +219,7 @@ export function createTaskForm() {
 
     const {
         formContainer,
-        inboxForm,
+        form,
         titleTask,
         descriptionTask,
         priorityTask,
@@ -224,7 +227,7 @@ export function createTaskForm() {
         inboxActions,
         saveTaskBtn,
         cancelTaskBtn
-      } = createTaskForm();
+      } = createTaskForm("inbox");
 
     todoListParent.appendChild(formContainer);
 
@@ -267,7 +270,7 @@ export function createTaskForm() {
     
 
      taskBtn.addEventListener("click", () => {
-        inboxForm.style.display = "flex";
+        form.style.display = "flex";
         inboxActions.style.display = "flex";
         addTaskBtn.style.display = "none";
         editTaskDetails.style.display = "none";
@@ -280,11 +283,11 @@ export function createTaskForm() {
 
     //it triggers when a task created from today section.
     document.addEventListener("taskAdded", (e) => {
-        console.log("Today received new task:", e.detail.task);
+        console.log("Inbox received new task:", e.detail.task);
         localStorage.setItem("tasks", JSON.stringify(myTodoList));  
         handleDisplayTask(myTodoList); // auto-refresh today section
-        inboxForm.reset();
-        inboxForm.style.display = "none";
+        form.reset();
+        form.style.display = "none";
 
         if(myTodoList.length !== 0) {
             addTaskBtn.style.display = "flex";
@@ -298,6 +301,22 @@ export function createTaskForm() {
         }
     });
     
+    document.addEventListener("updatedTask", () => {
+        localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+        handleDisplayTask(myTodoList); // auto-refresh today section
+        form.reset();
+        form.style.display = "none";
+        todoListParent.appendChild(addTaskBtn);  
+    });
+
+    document.addEventListener("deletedTask", () => {
+        localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+        handleDisplayTask(myTodoList); // auto-refresh today section
+        form.reset();
+        form.style.display = "none";
+        todoListParent.appendChild(addTaskBtn);  
+    });
+
 
 function handleCreateTask() {
 
@@ -309,19 +328,66 @@ function handleCreateTask() {
     let newTask = new Task(title, description, priority, date);
     myTodoList.push(newTask);
     localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-    handleDisplayTask(myTodoList);
 
-    // ✅ Broadcast event that a task was created
+    // Broadcast event that a task was created
     document.dispatchEvent(new CustomEvent("taskAdded", {
-        detail: { task: newTask } // optional, you can pass the new task
+        detail: { 
+            task: newTask 
+        } // optional, you can pass the new task
     }));
 
-    inboxForm.reset();
-    inboxForm.style.display = "none";
+    form.reset();
+    form.style.display = "none";
+    
   
 }
 
-function handleViewTask(tasks) {
+function handleDisplayTask(tasks) {
+
+    let task = "";
+ 
+    todoListTaskItem.innerHTML = "";
+    todoListTask.innerHTML = "";
+    console.log(todoListTaskItem);
+ 
+ 
+     tasks.forEach((taskItem) => {
+         task += `
+         <div class="task__item">
+             <div class="task__item-title">
+                 <input type="checkbox" class="isDone" data-id="${taskItem.id}" />
+                 <p>${taskItem.title}</p>
+             </div>
+ 
+             <div class="task__item-btn">
+                 <button class="btn btn-details" data-id="${taskItem.id}">Details</button>
+                 <div>${format(parseISO(taskItem.date), "MMMM d, yyyy")}</div>
+ 
+                 <button class="btn btn-edit" data-source="inbox" data-id="${taskItem.id}">
+                     <img src="${editIcon}" alt="Edit">
+                 </button>
+ 
+                 <button class="btn btn-delete" data-id="${taskItem.id}">
+                     <img src="${deleteIcon}" alt="Delete">
+                 </button>
+             </div>
+ 
+             <div class="task-line"></div>
+         </div>
+              `;
+     });
+ 
+     todoListTaskItem.innerHTML = task;
+     todoListTask.appendChild(todoListTaskItem);
+     todoListParent.appendChild(todoListTask);
+ 
+     handleViewTask();
+     handleEditTask();
+     handleDeleteTask();
+     isDone();
+}
+
+function handleViewTask() {
     
     let viewTaskDetails = "";
 
@@ -330,6 +396,8 @@ function handleViewTask(tasks) {
 
     document.querySelectorAll(".btn-details").forEach((detailsBtn, index) => {
         detailsBtn.addEventListener("click", () => {
+            const taskId = Number(detailsBtn.dataset.id);
+            const task = myTodoList.find(taskItem => taskItem.id === taskId);
             viewTaskDetails = `
                 <div class="task__modal-item">
                         <div class="btn task__btn-exit">
@@ -339,13 +407,13 @@ function handleViewTask(tasks) {
                         </div>
 
                         <div class="task__modal-title">
-                            <p>${tasks[index].title}</p>
+                            <p>${task.title}</p>
                         </div>
                 
                     <div class="task__modal-text">
-                        <p>Description:  ${tasks[index].description}</p>
-                        <p>Priority:  ${tasks[index].priority}</p>
-                        <p>Due Date:   ${format(parseISO(tasks[index].date), "MMMM d, yyyy")}</p>
+                        <p>Description:  ${task.description}</p>
+                        <p>Priority:  ${task.priority}</p>
+                        <p>Due Date:   ${format(parseISO(task.date), "MMMM d, yyyy")}</p>
                     </div>
                 </div>
             `
@@ -366,72 +434,119 @@ function handleViewTask(tasks) {
     todoListParent.appendChild(taskModal);
 }
 
-
-function handleEditTask(task) {
+function handleEditTask() {
+    console.log("handleEditTask called"); // Debug log
 
     editTaskDetails.appendChild(saveEditBtn);
     editTaskDetails.appendChild(cancelEditBtn);
     editDetails.appendChild(editTaskDetails);
-    inboxForm.appendChild(editDetails);
+    form.appendChild(editDetails);
+
+    const editButtons = document.querySelectorAll(".btn-edit");
+    console.log("Found edit buttons:", editButtons.length);
+
+    if(editButtons.length === 0) {
+        console.log("No edit buttons found, skipping handleEditTask");
+        return;
+    }
+    
 
     document.querySelectorAll(".btn-edit").forEach((editBtn, index) => {
+        console.log("Found edit button:", editBtn); // Debug log
+        console.log(`Found edit button ${index}:`, editBtn);
+        
         editBtn.onclick = () => {  
-            currentEditIndex = index;
-            // let taskId = Number(editBtn.dataset.id);
-            // const taskIndex = myTodoList.findIndex(task => task.id === taskId);
+            console.log("Edit button clicked!"); // Debug log
+            const source = editBtn.dataset.source;
+            console.log("Edit button source:", source);
 
-            inboxForm.style.display = "flex";
+            let taskId = Number(editBtn.dataset.id);
+            console.log("Task ID:", taskId); // Debug log
+            
+            const taskIndex = myTodoList.findIndex(task => task.id === taskId);
+            console.log("Task Index:", taskIndex); // Debug log
+            currentEditIndex = taskIndex;
+
+            // Check how many forms exist
+            const allForms = document.querySelectorAll('.inbox__form');
+            console.log("Number of inbox forms found:", allForms.length);
+
+            form.style.display = "flex";
             editDetails.style.display = "flex";
             editTaskDetails.style.display = "flex";
             inboxActions.style.display = "none";
 
+            // Debug: Check if styles were applied
+            console.log("form display:", form.style.display);
+
+            console.log("editDetails display:", editDetails.style.display);
+
             // pre-fill values
-            titleTask.value = task[currentEditIndex].title;
-            descriptionTask.value = task[currentEditIndex].description;
-            priorityTask.value = task[currentEditIndex].priority;
-            dateTask.value = task[currentEditIndex].date;
+            titleTask.value = myTodoList[currentEditIndex].title;
+            descriptionTask.value = myTodoList[currentEditIndex].description;
+            priorityTask.value = myTodoList[currentEditIndex].priority;
+            dateTask.value = myTodoList[currentEditIndex].date;
+            
+            // Debug the pre-filled values
+            console.log("Pre-filled values:");
+            console.log("Title:", titleTask.value);
+            console.log("Description:", descriptionTask.value);
+            console.log("Priority:", priorityTask.value);
+            console.log("Date:", dateTask.value);
+            
         };
     });
 
+    // Debug save button
     saveEditBtn.onclick = () => {
-        let updatedTaskDetails = new Task(
-            titleTask.value,
-            descriptionTask.value,
-            priorityTask.value,
-            dateTask.value
-        );
+        console.log("Save edit clicked, currentEditIndex:", currentEditIndex);
+        
+      
+            let updatedTaskDetails = new Task(
+                titleTask.value,
+                descriptionTask.value,
+                priorityTask.value,
+                dateTask.value
+            );
 
-        myTodoList[currentEditIndex] = updatedTaskDetails;
+            console.log("Updated task details:", updatedTaskDetails);
 
-        // re-render tasks fresh
-        localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-        handleDisplayTask(myTodoList);
-        inboxForm.style.display = "none";
-        inboxForm.reset();
-        todoListParent.appendChild(addTaskBtn);
+            // preserve the original ID
+            updatedTaskDetails.id = myTodoList[currentEditIndex].id;
+            myTodoList[currentEditIndex] = updatedTaskDetails;
+
+            console.log("Updated myTodoList:", myTodoList);
+
+            // re-render tasks fresh
+            localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+            handleDisplayTask(myTodoList);
+            todoListParent.appendChild(addTaskBtn);  
+            form.style.display = "none";
+            form.reset();
+            addTaskBtn.style.display = "flex";
+            
     };
 
     cancelEditBtn.onclick = () => {
-        inboxForm.style.display = "none";
-        inboxForm.reset();
+        form.style.display = "none";
+        form.reset();
     };
-    
 }
 
 function handleDeleteTask() {
 
 
     document.querySelectorAll(".btn-delete").forEach((button) => {
-        button.addEventListener("click", (e) => {
+        button.onclick = (e) => {
             const taskId = e.currentTarget.dataset.id;
-             // find the index of the task
+            // find the index of the task
             const index = myTodoList.findIndex(task => task.id == taskId);
-            myTodoList.splice(index, 1)
+            myTodoList.splice(index, 1);
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
             handleDisplayTask(myTodoList);
-            todoListParent.appendChild(addTaskBtn);  
-            inboxForm.reset();
-        });
+            todoListParent.appendChild(addTaskBtn);
+            form.reset();
+        };
     });
     
 
@@ -447,52 +562,6 @@ function handleDeleteTask() {
 
 }
 
-function handleDisplayTask(tasks) {
-
-  
-   let task = "";
-
-   todoListTaskItem.innerHTML = "";
-   todoListTask.innerHTML = "";
-   console.log(todoListTaskItem);
-
-
-    tasks.forEach((taskItem, i) => {
-        task += `
-        <div class="task__item">
-            <div class="task__item-title">
-                <input type="checkbox" class="isDone" data-id="${taskItem.id}" />
-                <p>${taskItem.title}</p>
-            </div>
-
-            <div class="task__item-btn">
-                <button class="btn btn-details" data-id="${taskItem.id}">Details</button>
-                <div>${format(parseISO(taskItem.date), "MMMM d, yyyy")}</div>
-
-                <button class="btn btn-edit data-source="inbox" data-id="${taskItem.id}">
-                    <img src="${editIcon}" alt="Edit">
-                </button>
-
-                <button class="btn btn-delete" data-id="${taskItem.id}">
-                    <img src="${deleteIcon}" alt="Delete">
-                </button>
-            </div>
-
-            <div class="task-line"></div>
-        </div>
-             `;
-    });
-
-    todoListTaskItem.innerHTML = task;
-    todoListTask.appendChild(todoListTaskItem);
-    todoListParent.appendChild(todoListTask);
-
-    handleViewTask(tasks);
-    handleEditTask(tasks);
-    handleDeleteTask();
-    isDone();
-}
-
 function isDone() {
 
     document.querySelectorAll(".isDone").forEach((isCheck) => {
@@ -503,16 +572,16 @@ function isDone() {
              myTodoList.splice(index, 1);
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
             handleDisplayTask(myTodoList);
+            todoListParent.appendChild(addTaskBtn);
         };
     });
     
 }
 
-inboxForm.addEventListener("submit",  function(event) {
+form.addEventListener("submit", function(event) {
     event.preventDefault();
-    console.log("Form submitted");
     handleCreateTask();
-    inboxForm.reset();
+    form.reset();
     
     if(myTodoList.length !== 0) {
         addTaskBtn.style.display = "flex";
@@ -529,8 +598,8 @@ inboxForm.addEventListener("submit",  function(event) {
 
 
 cancelTaskBtn.addEventListener("click", () => {
-    inboxForm.reset();
-    inboxForm.style.display = "none";
+    form.reset();
+    form.style.display = "none";
     addTaskBtn.style.display = "flex";
 });
 
@@ -544,7 +613,3 @@ return todoListParent;
 
 
 export default todoList;
-
-
-
-

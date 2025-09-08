@@ -145,7 +145,7 @@ select {
     
 }
 
-.inbox__form {
+.inbox__form, .today__form {
     width: 100%;
     display: none;
     flex-direction: column;
@@ -263,25 +263,25 @@ select {
     background-color: var(--green-100);
 }
 
-.btn-delete, .btn-edit, .btn-exit {
+.btn-delete, .btn-edit, .btn-exit, .btn__today-edit, .btn__today-delete {
     padding: 0;
     background-color: var(--white);
     color: white;
 }
 
-.btn-delete img{
+.btn-delete img, .btn__today-delete img{
     width: 21px;
 }
 
-.btn-edit img {
+.btn-edit img, .btn__today-edit img {
     width: 18px;
 }
 
-.btn-delete img:hover {
+.btn-delete img:hover, .btn__today-delete img:hover {
     filter: invert(19%) sepia(46%) saturate(6923%) hue-rotate(2deg) brightness(104%) contrast(73%)
 }
 
-.btn-edit img:hover {
+.btn-edit img:hover, .btn__today-edit:hover {
     filter: invert(26%) sepia(94%) saturate(1775%) hue-rotate(131deg) brightness(99%) contrast(95%);
 }
 
