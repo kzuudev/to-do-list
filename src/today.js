@@ -92,7 +92,20 @@ function today() {
         renderTodayTasks(); // auto-refresh today section
     });
     
+    document.addEventListener("updatedTask", () => {
+        localStorage.setItem("tasks", JSON.stringify(myTodoList));
+        handleDisplayTask(myTodoList);
+    })
 
+    document.addEventListener("deletedTask", () => {
+        localStorage.setItem("tasks", JSON.stringify(myTodoList));
+        handleDisplayTask(myTodoList)
+    })
+
+    document.addEventListener("taskDone", () => {
+        localStorage.setItem("tasks", JSON.stringify(myTodoList));
+        handleDisplayTask(myTodoList)
+    })
     
     function handleCreateTask() {
         let title = todayTitleTask.value;

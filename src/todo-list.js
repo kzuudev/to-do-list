@@ -318,6 +318,8 @@ export function createTaskForm(sectionName = "inbox") {
     });
 
 
+
+
 function handleCreateTask() {
 
     let title =  titleTask.value;
@@ -519,6 +521,12 @@ function handleEditTask() {
 
             // re-render tasks fresh
             localStorage.setItem("tasks", JSON.stringify(myTodoList));  
+
+            document.dispatchEvent(new CustomEvent("updatedTask", {
+                detail: {
+                    updatedTaskDetails
+                }
+            }))
             handleDisplayTask(myTodoList);
             todoListParent.appendChild(addTaskBtn);  
             form.style.display = "none";
@@ -543,6 +551,13 @@ function handleDeleteTask() {
             const index = myTodoList.findIndex(task => task.id == taskId);
             myTodoList.splice(index, 1);
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
+
+            document.dispatchEvent(new CustomEvent("deletedTask", {
+                detail: {
+                    myTodoList
+                }
+            }))
+
             handleDisplayTask(myTodoList);
             todoListParent.appendChild(addTaskBtn);
             form.reset();
@@ -571,6 +586,13 @@ function isDone() {
              const index = myTodoList.findIndex(task => task.id == taskId);
              myTodoList.splice(index, 1);
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
+
+            document.dispatchEvent(new CustomEvent("taskDone", {
+                detail: {
+                    myTodoList
+                }
+            }))
+
             handleDisplayTask(myTodoList);
             todoListParent.appendChild(addTaskBtn);
         };

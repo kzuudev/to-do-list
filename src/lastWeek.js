@@ -27,7 +27,6 @@ function lastWeek() {
         let lastWeekTask = "";
         lastWeekListItem.innerHTML = "";
 
-
         //get the date today
         const today = new Date();
 
@@ -69,6 +68,8 @@ function lastWeek() {
                                     </div>
                                 `;
             });
+        }else {
+            console.log("There's no tasks from last week.")
         }
 
 
