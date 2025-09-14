@@ -85,27 +85,30 @@ function today() {
         console.log("form opened:", form);
     });
 
-
-    //it triggers when a task (that has date today) created from inbox section.
-    document.addEventListener("taskAdded", (e) => {
-        console.log("Today received new task:", e.detail.task);
-        renderTodayTasks(); // auto-refresh today section
-    });
     
-    document.addEventListener("updatedTask", () => {
-        localStorage.setItem("tasks", JSON.stringify(myTodoList));
-        handleDisplayTask(myTodoList);
-    })
 
-    document.addEventListener("deletedTask", () => {
-        localStorage.setItem("tasks", JSON.stringify(myTodoList));
-        handleDisplayTask(myTodoList)
-    })
+    function todayHelper() {
+        //it triggers when a task (that has date today) created from inbox section.
+        document.addEventListener("taskAdded", () => {
+            renderTodayTasks(); // auto-refresh today section
+        });
 
-    document.addEventListener("taskDone", () => {
-        localStorage.setItem("tasks", JSON.stringify(myTodoList));
-        handleDisplayTask(myTodoList)
-    })
+        //it triggers when a task has ben update, deleted, or done
+        document.addEventListener("taskUpdated", () => {
+            localStorage.setItem("tasks", JSON.stringify(myTodoList));
+            handleDisplayTask(myTodoList);
+        })
+
+        document.addEventListener("taskDeleted", () => {
+            localStorage.setItem("tasks", JSON.stringify(myTodoList));
+            handleDisplayTask(myTodoList)
+        })
+
+        document.addEventListener("doneTask", () => {
+            localStorage.setItem("tasks", JSON.stringify(myTodoList));
+            handleDisplayTask(myTodoList)
+        })
+    }
     
     function handleCreateTask() {
         let title = todayTitleTask.value;
@@ -218,7 +221,6 @@ function today() {
             todayList.appendChild(todayTaskModal);
     }
 
-
     function handleEditTask() {
 
         editTaskDetails.appendChild(saveEditBtn);
@@ -285,8 +287,6 @@ function today() {
         
     }
     
-    
-
     function handleDeleteTask() {
 
         document.querySelectorAll(".btn__today-delete").forEach((button) => {
@@ -321,8 +321,6 @@ function today() {
         }
 
     }
-
-
 
     function handleSubmit() {
         form.addEventListener("submit",  function(event) {
@@ -438,7 +436,7 @@ function today() {
 
    
     handleSubmit();
-   
+    todayHelper();
    
 
     

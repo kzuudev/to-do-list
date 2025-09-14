@@ -1,8 +1,10 @@
 import { parseISO, isWithinInterval, subWeeks, startOfWeek, endOfWeek, format} from "date-fns";
-import { myTodoList, todoList  } from "./todo-list";
 import deleteIcon from '../assets/delete.svg';
 import editIcon from '../assets/edit.svg';
 import exitIcon from '../assets/exit.svg';
+import { handleViewTask, handleEditTask, handleDeleteTask, isDone, myTodoList, currentEditIndex, inboxHelper } from "./todo-list.js";
+
+
 
 function lastWeek() {
     
@@ -33,7 +35,7 @@ function lastWeek() {
          // Load all tasks from localStorage
          let storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-         const isLastWeekTask = storedTasks.filter((task) => {
+         const isLastWeekTask = myTodoList.filter((task) => {
             const taskDate = parseISO(task.date);
         
             return isWithinInterval(taskDate, {
@@ -76,16 +78,17 @@ function lastWeek() {
         lastWeekListItem.innerHTML = lastWeekTask;
         lastWeekList.appendChild(lastWeekListItem);
 
-          // re-attach events for today
-        //   handleEditTask(storedTasks);
-        //   handleViewTask(storedTasks);
-        //   handleDeleteTask();
-        //   isDone();
+   
 
     }
 
+    // add Read, Delete, isDone functions 
+    handleViewTask();
+    handleEditTask(); 
+    handleDeleteTask(); 
+    isDone();
     renderLastWeekTasks();
-
+    inboxHelper();
     return lastWeekList;
 }
 

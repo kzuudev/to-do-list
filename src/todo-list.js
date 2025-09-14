@@ -1,6 +1,6 @@
 
 import {  parseISO, format } from 'date-fns';
-import { ca, da } from 'date-fns/locale';
+
 import './style.css'
 import deleteIcon from '../assets/delete.svg';
 import editIcon from '../assets/edit.svg';
@@ -10,7 +10,7 @@ import exitIcon from '../assets/exit.svg';
 
 export let myTodoList = JSON.parse(localStorage.getItem("tasks")) || [];
 
-let currentEditIndex = null;
+export let currentEditIndex = null;
 
 export class Task {
     constructor(title, description, priority, date) {
@@ -204,10 +204,6 @@ export function createTaskForm(sectionName = "inbox") {
 
 }
 
-
-
- function todoList() {
-
     const todoListParent = document.createElement("div");
     todoListParent.classList.add("todo__list-item");
 
@@ -280,6 +276,7 @@ export function createTaskForm(sectionName = "inbox") {
      todoListParent.appendChild(addTaskBtn); 
 
     
+export function inboxHelper() {
 
     //it triggers when a task created from today section.
     document.addEventListener("taskAdded", (e) => {
@@ -301,9 +298,10 @@ export function createTaskForm(sectionName = "inbox") {
         }
     });
     
+    //it triggers when a task updated, deleted, or done in today section
     document.addEventListener("updatedTask", () => {
         localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-        handleDisplayTask(myTodoList); // auto-refresh today section
+        handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
         todoListParent.appendChild(addTaskBtn);  
@@ -311,16 +309,24 @@ export function createTaskForm(sectionName = "inbox") {
 
     document.addEventListener("deletedTask", () => {
         localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-        handleDisplayTask(myTodoList); // auto-refresh today section
+        handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
         todoListParent.appendChild(addTaskBtn);  
     });
 
+    document.addEventListener("doneTask", () => {
+        localStorage.setItem('tasks', JSON.stringify(myTodoList));
+        handleDisplayTask(myTodoList)
+        handleDisplayTask(myTodoList); // auto-refresh today section
+        form.reset();
+        form.style.display = "none";
+        todoListParent.appendChild(addTaskBtn);
+    })
 
+}
 
-
-function handleCreateTask() {
+export function handleCreateTask() {
 
     let title =  titleTask.value;
     let description =  descriptionTask.value;
@@ -344,7 +350,7 @@ function handleCreateTask() {
   
 }
 
-function handleDisplayTask(tasks) {
+export function handleDisplayTask(tasks) {
 
     let task = "";
  
@@ -389,7 +395,7 @@ function handleDisplayTask(tasks) {
      isDone();
 }
 
-function handleViewTask() {
+export function handleViewTask() {
     
     let viewTaskDetails = "";
 
@@ -436,7 +442,7 @@ function handleViewTask() {
     todoListParent.appendChild(taskModal);
 }
 
-function handleEditTask() {
+export function handleEditTask() {
     console.log("handleEditTask called"); // Debug log
 
     editTaskDetails.appendChild(saveEditBtn);
@@ -522,7 +528,7 @@ function handleEditTask() {
             // re-render tasks fresh
             localStorage.setItem("tasks", JSON.stringify(myTodoList));  
 
-            document.dispatchEvent(new CustomEvent("updatedTask", {
+            document.dispatchEvent(new CustomEvent("taskUpdated", {
                 detail: {
                     updatedTaskDetails
                 }
@@ -541,7 +547,7 @@ function handleEditTask() {
     };
 }
 
-function handleDeleteTask() {
+export function handleDeleteTask() {
 
 
     document.querySelectorAll(".btn-delete").forEach((button) => {
@@ -552,7 +558,7 @@ function handleDeleteTask() {
             myTodoList.splice(index, 1);
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
 
-            document.dispatchEvent(new CustomEvent("deletedTask", {
+            document.dispatchEvent(new CustomEvent("taskDeleted", {
                 detail: {
                     myTodoList
                 }
@@ -577,7 +583,7 @@ function handleDeleteTask() {
 
 }
 
-function isDone() {
+export function isDone() {
 
     document.querySelectorAll(".isDone").forEach((isCheck) => {
         isCheck.onclick = (e) => {
@@ -587,7 +593,7 @@ function isDone() {
              myTodoList.splice(index, 1);
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
 
-            document.dispatchEvent(new CustomEvent("taskDone", {
+            document.dispatchEvent(new CustomEvent("doneTask", {
                 detail: {
                     myTodoList
                 }
@@ -625,13 +631,14 @@ cancelTaskBtn.addEventListener("click", () => {
     addTaskBtn.style.display = "flex";
 });
 
+inboxHelper();
 
-return todoListParent;
+
     
 
-}
 
 
 
 
-export default todoList;
+
+export default todoListParent;

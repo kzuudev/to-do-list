@@ -1,7 +1,10 @@
-import todoList, { myTodoList } from './todo-list';
+import todoListParent from "./todo-list.js";
 import today from './today';
 import lastWeek from './lastWeek';
 
+function todoList() {
+    return todoListParent
+}
 
 //central storage
 let fetchTask = {
@@ -93,9 +96,6 @@ function projectUI() {
     return sidebarItem;
 }
 
-function getTasks(category) {
-    return fetchTask[category];
-}
 
 
 
