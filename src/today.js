@@ -1,4 +1,4 @@
-import { isToday, parse, isWithinInterval, subDays, format, parseISO } from 'date-fns';
+import { isToday, format, parseISO } from 'date-fns';
 import './style.css'
 import { myTodoList } from './todo-list.js';
 import deleteIcon from '../assets/delete.svg';
@@ -6,7 +6,6 @@ import editIcon from '../assets/edit.svg';
 import exitIcon from '../assets/exit.svg';
 import { createTaskForm } from './todo-list.js';
 import { Task } from './todo-list.js';
-import { da } from 'date-fns/locale';
 
 
 let currentEditIndex = null;
@@ -27,7 +26,7 @@ function today() {
     allTodayListItem.classList.add("today__list-item");
 
     const todayTaskModal = document.createElement("div");
-    todayTaskModal.classList.add("task__modal");
+    todayTaskModal.classList.add("task__modal-today");
 
     const { form, 
             titleTask: todayTitleTask,
@@ -87,10 +86,10 @@ function today() {
 
     
 
-    function todayHelper() {
+    function helper() {
         //it triggers when a task (that has date today) created from inbox section.
         document.addEventListener("taskAdded", () => {
-            renderTodayTasks(); // auto-refresh today section
+            renderTodayTasks(); 
         });
 
         //it triggers when a task has ben update, deleted, or done
@@ -122,8 +121,8 @@ function today() {
         localStorage.setItem("tasks", JSON.stringify(myTodoList));
         handleDisplayTask(myTodoList);
         
-        // ✅ Broadcast event that a task was created
-        document.dispatchEvent(new CustomEvent("taskAdded", {
+        // Broadcast event that a task was created
+        document.dispatchEvent(new CustomEvent("todayTaskAdded", {
             detail: { task: newTask } // optional, you can pass the new task
         }));
 
@@ -146,7 +145,7 @@ function today() {
                     </div>
     
                     <div class="task__item-btn">
-                        <button class="btn btn-details" data-id="${taskToday.id}">Details</button>
+                        <button class="btn btn__today-details" data-id="${taskToday.id}">Details</button>
                         <div>${format(parseISO(taskToday.date), "MMMM d, yyyy")}</div>
     
                         <button class="btn btn__today-edit" data-source="today" data-id="${taskToday.id}">
@@ -176,16 +175,16 @@ function today() {
 
     function handleViewTask() {
         
-        let viewTaskDetails = "";
+        let viewTodayTaskDetails = "";
    
-            const viewTaskInfo = document.createElement("div");
-            viewTaskInfo.classList.add("task__modal-info")
+            const viewTodayTaskInfo = document.createElement("div");
+            viewTodayTaskInfo.classList.add("task__modal-today-info")
         
-            document.querySelectorAll(".btn-details").forEach((detailsBtn) => {
+            document.querySelectorAll(".btn__today-details").forEach((detailsBtn) => {
                 detailsBtn.addEventListener("click", () => {
                     const taskId = Number(detailsBtn.dataset.id)
                     const task = myTodoList.find(taskItem => taskItem.id === taskId);
-                    viewTaskDetails = `
+                    viewTodayTaskDetails = `
                         <div class="today-task__modal-item">
                                 <div class="btn task__btn-exit">
                                     <button class="btn btn-exit">
@@ -200,24 +199,23 @@ function today() {
                             <div class="today task__modal-text">
                                 <p>Description:  ${task.description}</p>
                                 <p>Priority:  ${task.priority}</p>
-                                <p>Due Date:   ${task.date}</p>
+                                <p>Due Date:   ${format(parseISO(task.date), "MMMM d, yyyy")}</p>
                             </div>
                         </div>
                     `
                     todayTaskModal.style.display = "flex";
         
-                    viewTaskInfo.innerHTML = viewTaskDetails;
+                    viewTodayTaskInfo.innerHTML = viewTodayTaskDetails;
         
                     document.querySelector(".btn-exit").addEventListener("click", () => {
                         todayTaskModal.style.display = "none";
-                        viewTaskInfo.innerHTML = "";
+                        viewTodayTaskInfo.innerHTML = "";
                     });
                 });
         
             });
         
-            todayTaskModal.appendChild(viewTaskInfo);
-        
+            todayTaskModal.appendChild(viewTodayTaskInfo);
             todayList.appendChild(todayTaskModal);
     }
 
@@ -269,7 +267,7 @@ function today() {
             localStorage.setItem("tasks", JSON.stringify(myTodoList));  
             handleDisplayTask(myTodoList);
 
-            document.dispatchEvent(new CustomEvent("updatedTask", {
+            document.dispatchEvent(new CustomEvent("todayUpdatedTask", {
                 detail: {
                     task: updatedTaskDetails
                 }
@@ -298,7 +296,7 @@ function today() {
                 localStorage.setItem("tasks", JSON.stringify(myTodoList));
                 handleDisplayTask(myTodoList);
 
-                document.dispatchEvent(new CustomEvent("deletedTask", {
+                document.dispatchEvent(new CustomEvent("todayDeletedTask", {
                     detail: {
                         task: myTodoList
                     }
@@ -408,7 +406,6 @@ function today() {
         return todayListItem;
     }
 
-
     function isDone() {
 
         document.querySelectorAll(".isDone").forEach((isCheck) => {
@@ -419,6 +416,13 @@ function today() {
                  myTodoList.splice(index, 1)
                 localStorage.setItem("tasks", JSON.stringify(myTodoList));
                 handleDisplayTask(myTodoList);
+
+
+                document.dispatchEvent(new CustomEvent("todayDoneTask", {
+                    detail: {
+                        task: myTodoList
+                    }
+                }));
 
                 todayList.appendChild(addTaskBtn);  
             });
@@ -436,7 +440,7 @@ function today() {
 
    
     handleSubmit();
-    todayHelper();
+    helper();
    
 
     

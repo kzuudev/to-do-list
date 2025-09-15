@@ -252,36 +252,36 @@ select {
     cursor: pointer;
 }
 
-.btn-details {
+.btn-details, .btn__lastweek-details, .btn__today-details {
     color: var(--green-100);
     background-color: var(--white);
     border: 1px solid var(--green);
 }
 
-.btn-details:hover {
+.btn-details:hover, .btn__lastweek-details:hover .btn__today-details:hover {
     color: var(--white);
     background-color: var(--green-100);
 }
 
-.btn-delete, .btn-edit, .btn-exit, .btn__today-edit, .btn__today-delete {
+.btn-delete, .btn-edit, .btn-exit, .btn__today-edit, .btn__today-delete, .btn__lastweek-edit, .btn__lastweek-delete {
     padding: 0;
     background-color: var(--white);
     color: white;
 }
 
-.btn-delete img, .btn__today-delete img{
+.btn-delete img, .btn__today-delete img, .btn__lastweek-delete img {
     width: 21px;
 }
 
-.btn-edit img, .btn__today-edit img {
+.btn-edit img, .btn__today-edit img, .btn__lastweek-edit img  {
     width: 18px;
 }
 
-.btn-delete img:hover, .btn__today-delete img:hover {
+.btn-delete img:hover, .btn__today-delete img:hover, .btn__lastweek-delete img:hover {
     filter: invert(19%) sepia(46%) saturate(6923%) hue-rotate(2deg) brightness(104%) contrast(73%)
 }
 
-.btn-edit img:hover, .btn__today-edit:hover {
+.btn-edit img:hover, .btn__today-edit:hover, .btn__lastweek-edit:hover {
     filter: invert(26%) sepia(94%) saturate(1775%) hue-rotate(131deg) brightness(99%) contrast(95%);
 }
 
@@ -316,19 +316,19 @@ select {
 
 
 
-.task__modal {
+.task__modal, .task__modal-today {
     width: 60%;
     display: none;
     position: absolute;
     background-color: white; 
-    top: 35%;
+    top: 25%;
     right: 10%;
     transform: translate(-30%, -30%);
     box-shadow: 0 4px 12px 4px rgba(0, 0, 0, 0.25);
     gap: 1rem;
 }
 
-.task__modal-info {
+.task__modal-info, .task__modal-today-info {
     width: 100%;
 }
 
