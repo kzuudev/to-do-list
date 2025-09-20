@@ -338,6 +338,14 @@ function helper() {
         todoListParent.appendChild(addTaskBtn);
     })
 
+    document.addEventListener("lastWeekDoneTask", () => {
+        localStorage.setItem('tasks', JSON.stringify(myTodoList));
+        handleDisplayTask(myTodoList); 
+        form.reset();
+        form.style.display = "none";
+        todoListParent.appendChild(addTaskBtn);
+    })
+
 }
 
 function handleCreateTask() {

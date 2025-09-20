@@ -120,12 +120,13 @@ function lastWeek() {
         handleViewTask();
         handleEditTask();
         handleDeleteTask();
+        handleCompletedTask();
         helper();
 
         return lastWeekList;
     }
 
-    // add View, Delete, isDone functions 
+    // add View, Delete, completed task functions 
     function handleViewTask() {
 
         let viewTaskLastWeekDetails = "";
@@ -254,6 +255,25 @@ function lastWeek() {
                 form.reset();
             }
         }); 
+    }
+
+    function handleCompletedTask() {
+
+        document.querySelectorAll(".isDone").forEach((isDone) => {
+            isDone.addEventListener("change", (e) => {
+                const taskId = e.currentTarget.dataset.id;
+                const index = myTodoList.findIndex(task => task.id === taskId);
+
+                myTodoList.splice(index, 1);
+
+                document.dispatchEvent(new CustomEvent("lastWeekDoneTask", {
+                    detail: {
+                        task: myTodoList
+                    }
+                }))
+            })
+
+        })
     }
 
     function helper() {
