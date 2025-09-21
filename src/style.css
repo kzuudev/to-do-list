@@ -93,7 +93,10 @@ select {
   margin-bottom: 1rem;
 }
 
+
+
 .sidebar__item-list {
+    display: flex;
     margin-bottom: .75em;
 }
 
@@ -133,6 +136,7 @@ select {
     border: none;
 
 }
+
 
 .add__task-btn:hover {
     background-color: var(--red);
@@ -355,7 +359,49 @@ select {
 }
 
 
-
 #today-list {
     display: none;
+}
+
+.project__container-add {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+
+}
+
+.project__container-add {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  
+  /* hidden by default */
+  .project__btn-add {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .15s, visibility .15s;
+  }
+  
+  /* show when hovering the sidebar link (class toggled on the page) */
+  .project.show-add .project__btn-add {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  
+  /* also show when hovering the header inside the page */
+  .project__container-add:hover .project__btn-add,
+  .project__container-add:focus-within .project__btn-add {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  
+
+
+.project__add-icon {
+    width: 12px;
 }
