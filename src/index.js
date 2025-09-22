@@ -19,8 +19,8 @@ const sidebarItem = sidebar();
 
 
 sidebarParent.appendChild(sidebarItem);
-// sidebarParent.appendChild(projectList);
 
+// sidebarParent.appendChild(projectList);
 // todoListParent.appendChild(todoListItem);
 // todayListParent.appendChild(todayListItem);
 
