@@ -30,16 +30,11 @@ import exitIcon from '../assets/exit.svg';
 
     projectAddBtn.appendChild(addIcon);
 
-    projectAdd.appendChild(projectHeader)
+    projectAdd.appendChild(projectHeader);
     projectAdd.appendChild(projectAddBtn);
    
 
-    const kru = document.createElement("p");
-    kru.textContent = "Project Task";
 
-    project.appendChild(kru);
-
-    
     // Project Form Container
     const formContainer = document.createElement("div");
     formContainer.classList.add("project__wrapper");
@@ -49,7 +44,6 @@ import exitIcon from '../assets/exit.svg';
     projectForm.classList.add("project__form");
     
     // Project Form Headings
-
     const projectFormHeader = document.createElement("div");
     projectFormHeader.classList.add("project__header");
 
@@ -70,7 +64,6 @@ import exitIcon from '../assets/exit.svg';
     headerExitBtn.appendChild(headerExitIcon);
     projectHeaderExit.appendChild(headerExitBtn);
 
- 
 
     // Project Title Container
     const projectTitleItem = document.createElement("div");
@@ -84,7 +77,7 @@ import exitIcon from '../assets/exit.svg';
 
     // Project Input (label)
     const projectInput = document.createElement("input");
-    projectInput.classList.add("project__title");
+    projectInput.classList.add("project__form-title");
     projectInput.type = "text";
     projectInput.id = "project-title";
     projectInput.name = "project-title";
@@ -101,10 +94,10 @@ import exitIcon from '../assets/exit.svg';
     saveProjectBtn.textContent = "Add Project";
 
     // Project Actions (Close)
-
     const cancelProjectBtn = document.createElement("button");
     cancelProjectBtn.classList.add("project__btn-cancel");
     cancelProjectBtn.textContent = "Cancel";
+
 
     projectFormHeader.appendChild(projectFormHeaderTitle);
     projectFormHeader.appendChild(projectHeaderExit);
@@ -122,21 +115,39 @@ import exitIcon from '../assets/exit.svg';
 
     projectForm.appendChild(projectTitleItem);
     projectForm.appendChild(projectActions);
-
-
+    project.appendChild(formContainer);
 
     projectAddBtn.addEventListener("click", () => {
-        project.appendChild(formContainer)
+        formContainer.style.display = "flex";
+        project.appendChild(formContainer);
+        console.log("Project Add Button Clicked!")
     });
 
-    //edit (save & cancel) button parent
+    projectAddBtn.addEventListener("mouseenter", () => {
+        projectAddBtn.classList.add("show-add");
+        console.log("hover");
+    });
+
+    projectAddBtn.addEventListener("mouseleave", () => {
+        projectAddBtn.classList.remove("show-add");
+        console.log("leave");
+    });
 
 
+    cancelProjectBtn.addEventListener("click", () => {
+        formContainer.style.display = "none";
+        projectForm.reset();
+    });
 
-    //edit (save & cancel) button child
+    projectHeaderExit.addEventListener("click", () => {
+        formContainer.style.display = "none";
+        projectForm.reset();
+    });
 
 
     //project CRUD
+    const listofProjects = [];
+
 
 
 export default project;

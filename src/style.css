@@ -366,14 +366,15 @@ select {
 
 .project__parent {
     width: 100%;
-
+    border: none;
 }
 
 .project__container-add {
+    width: 100%;
     display: flex;
     align-items: center;
-    flex-direction: row-reverse;
-    gap: 12px;
+    justify-content: space-between;
+    cursor: pointer;
   }
   
 /* hidden by default */
@@ -443,6 +444,9 @@ select {
     width: 16px;
 }
 
+.project__wrapper {
+    display: none;
+}
 
 .project__form {
     width: 100%;
@@ -463,16 +467,20 @@ select {
 
 .project__title {
     width: 100%;
-    margin-top: 1em;
-    padding: .75em;
-    border: 1px solid var(--gray);
-    border-radius: .2em;
 }
 
 .project__actions {
     display: flex;
     gap: 1em;
     justify-content: end;
+}
+
+.project__form-title {
+    width: 100%;
+    padding-block: .75em;
+    margin-top: 1em;
+    border-radius: .25em;
+    border: 1px solid black;
 }
 
 .project__btn-save {

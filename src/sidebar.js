@@ -1,7 +1,7 @@
 import todoListParent from "./todo-list.js";
 import today from './today';
 import lastWeek from './lastWeek';
-import project, { projectHeader, projectAddBtn }from './project.js';
+import project, { projectHeader, projectAddBtn, projectAdd }from './project.js';
 import './style.css'
 
 function todoList() {
@@ -24,7 +24,7 @@ function sidebar() {
         { title: "Inbox",},
         { title: "Today",},
         { title: "Last Week",},
-        { title: projectHeader.textContent }, 
+ 
     ]
 
     const renderPages = {
@@ -42,6 +42,7 @@ function sidebar() {
         todoListParent.appendChild(section);
         section.style.display = "none";
         pageSections[key] = section; 
+        console.log( pageSections[key] = section)
     }
 
     sidebarItemList.forEach((item) => {
@@ -56,24 +57,26 @@ function sidebar() {
         itemList.appendChild(link);       
         sidebarItem.appendChild(itemList);
 
-        if (item.title === projectHeader.textContent) {
-            sidebarItem.addEventListener("mouseenter", () => {
-              sidebarItem.classList.add("show-add");
-              console.log("hover");
-              sidebarItem.appendChild(projectAddBtn);
-            });
+        
+        // if (item.title === projectHeader.textContent) {
+        //     sidebarItem.addEventListener("mouseenter", () => {
+ 
+        //       sidebarItem.classList.add("show-add");
+        //       console.log("hover");
+        //       sidebarItem.appendChild(projectAddBtn);
+        //     });
           
-            sidebarItem.addEventListener("mouseleave", () => {
-              sidebarItem.classList.remove("show-add");
-              console.log("leave");
-              if (sidebarItem.contains(projectAddBtn)) {
-                sidebarItem.removeChild(projectAddBtn);
-              }
-            });
+        //     sidebarItem.addEventListener("mouseleave", () => {
+        //       sidebarItem.classList.remove("show-add");
+        //       console.log("leave");
+        //       if (sidebarItem.contains(projectAddBtn)) {
+        //         sidebarItem.removeChild(projectAddBtn);
+        //       }
+        //     });
           
-            sidebarItem.addEventListener("focus", () => sidebarItem.classList.add("show-add"));
-            sidebarItem.addEventListener("blur",  () => sidebarItem.classList.remove("show-add"));
-          }
+        //     sidebarItem.addEventListener("focus", () => sidebarItem.classList.add("show-add"));
+        //     sidebarItem.addEventListener("blur",  () => sidebarItem.classList.remove("show-add"));
+        //   }
           
           
         
@@ -81,13 +84,31 @@ function sidebar() {
             e.preventDefault();
             for(let page in pageSections) {
                 pageSections[page].style.display = "none";
+                
             }
 
             pageSections[link.textContent].style.display = "block";
-            
             });
         });
 
+        const projectListItem = document.createElement("li");
+        projectListItem.classList.add("sidebar__item-list");
+        projectListItem.appendChild(projectAdd);  // contains My Projects + button
+        sidebarItem.appendChild(projectListItem);
+
+        // handle My Projects click manually
+        projectListItem.addEventListener("click", (e) => {
+            e.preventDefault();
+        
+            // hide all pages first
+            for (let page in pageSections) {
+            pageSections[page].style.display = "none";
+            }
+        
+            // show My Projects section
+            pageSections["My Projects"].style.display = "block";
+        });
+  
       
     return sidebarItem;
 
