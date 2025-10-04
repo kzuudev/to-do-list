@@ -42,6 +42,8 @@ import exitIcon from '../assets/exit.svg';
     // Project Form 
     const projectForm = document.createElement("form");
     projectForm.classList.add("project__form");
+    projectForm.setAttribute("method", "POST");
+    projectForm.setAttribute("action", "");
     
     // Project Form Headings
     const projectFormHeader = document.createElement("div");
@@ -148,6 +150,27 @@ import exitIcon from '../assets/exit.svg';
     //project CRUD
     const listofProjects = [];
 
+    //Create Project 
 
+    function handleCreate() {
+        let projects = projectInput.value;
+        listofProjects.push(projects);
+        console.log(listofProjects);
+    }
+
+
+    //Submit New Project
+    function handleSubmit() {
+        projectForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            handleCreate();
+            formContainer.style.display = "none";
+            projectForm.reset();
+
+        });
+    }
+
+
+    handleSubmit();
 
 export default project;
