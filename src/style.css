@@ -386,6 +386,10 @@ select {
     background-color: var(--white);
     border: none;
 }
+
+.project__list {
+    display: block;
+}
   
 /* show when hovering the sidebar link (class toggled on the page) */
 .sidebar__item.show-add .project__btn-add {
@@ -478,6 +482,7 @@ select {
 .project__form-title {
     width: 100%;
     padding-block: .75em;
+    padding-inline: 1em;
     margin-top: 1em;
     border-radius: .25em;
     border: 1px solid black;

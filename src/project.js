@@ -14,6 +14,11 @@ import exitIcon from '../assets/exit.svg';
     projectHeader.classList.add("project__title");
     projectHeader.textContent = "My Projects";
 
+    const projectParentAdd = document.createElement("div");
+    projectParentAdd.classList.add("project__container");
+
+
+
     // Project Item (add icon parent)
     export const projectAdd = document.createElement("div");
     projectAdd.classList.add("project__container-add");
@@ -28,11 +33,8 @@ import exitIcon from '../assets/exit.svg';
     addIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>`
 
 
-    projectAddBtn.appendChild(addIcon);
-
-    projectAdd.appendChild(projectHeader);
-    projectAdd.appendChild(projectAddBtn);
-   
+    // Project Add Parent 
+    projectParentAdd.appendChild(projectAdd);
 
 
     // Project Form Container
@@ -71,13 +73,13 @@ import exitIcon from '../assets/exit.svg';
     const projectTitleItem = document.createElement("div");
     projectTitleItem.classList.add("project__title-parent");
 
-    // Project Label
+    // Project Label (label)
     const projectLabel = document.createElement("h2");
     projectLabel.classList.add("project__label");
     projectLabel.setAttribute("for", "project-title");
     projectLabel.textContent = "Title: ";
 
-    // Project Input (label)
+    // Project Input 
     const projectInput = document.createElement("input");
     projectInput.classList.add("project__form-title");
     projectInput.type = "text";
@@ -100,21 +102,30 @@ import exitIcon from '../assets/exit.svg';
     cancelProjectBtn.classList.add("project__btn-cancel");
     cancelProjectBtn.textContent = "Cancel";
 
+    // Button Append
+    projectAddBtn.appendChild(addIcon);
+    projectAdd.appendChild(projectHeader);
+    projectAdd.appendChild(projectAddBtn);
+   
 
+    // Form Header Append
     projectFormHeader.appendChild(projectFormHeaderTitle);
     projectFormHeader.appendChild(projectHeaderExit);
 
-
+    // Form Actions Append
     projectActions.appendChild(cancelProjectBtn);
     projectActions.appendChild(saveProjectBtn);
 
+    // Form Container Append
     formContainer.appendChild(projectFormHeader);
     formContainer.appendChild(projectForm);
     
-    
+    // Project Input Append
     projectTitleItem.appendChild(projectLabel);
     projectTitleItem.appendChild(projectInput);
 
+
+    // Project Form Append
     projectForm.appendChild(projectTitleItem);
     projectForm.appendChild(projectActions);
     project.appendChild(formContainer);
@@ -150,8 +161,8 @@ import exitIcon from '../assets/exit.svg';
     //project CRUD
     const listofProjects = [];
 
-    //Create Project 
 
+    //Create Project 
     function handleCreate() {
         let projects = projectInput.value;
         listofProjects.push(projects);
@@ -166,8 +177,37 @@ import exitIcon from '../assets/exit.svg';
             handleCreate();
             formContainer.style.display = "none";
             projectForm.reset();
+            renderProjectsCreated();
 
         });
+    }
+
+
+    function renderProjectsCreated() {
+
+    listofProjects.forEach((projects => {
+
+        const projectListParent = document.createElement("div");
+        projectListParent.classList.add("project__list");
+
+        const projectList = document.createElement("li");
+        projectList.classList.add("project__list-item");
+
+        const projectLink = document.createElement("a");
+        projectLink.href = "#";
+
+        // projectList.appendChild(projectList);
+       
+        projectLink.textContent = projects;
+        projectList.textContent = projects;
+        
+        projectListParent.appendChild(projectList);
+
+
+        projectAdd.appendChild(projectListParent);
+        
+    }));
+
     }
 
 
