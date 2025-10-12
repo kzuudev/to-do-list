@@ -17,11 +17,12 @@ import exitIcon from '../assets/exit.svg';
     const projectParentAdd = document.createElement("div");
     projectParentAdd.classList.add("project__container");
 
-
-
     // Project Item (add icon parent)
     export const projectAdd = document.createElement("div");
     projectAdd.classList.add("project__container-add");
+
+    const projectAddList = document.createElement("div");
+    projectAddList.classList.add("project__container-add-list");
     
     //Project Add Button 
     export const projectAddBtn = document.createElement("button");
@@ -104,9 +105,9 @@ import exitIcon from '../assets/exit.svg';
 
     // Button Append
     projectAddBtn.appendChild(addIcon);
-    projectAdd.appendChild(projectHeader);
-    projectAdd.appendChild(projectAddBtn);
-   
+    projectAddList.appendChild(projectHeader);
+    projectAddList.appendChild(projectAddBtn);
+    projectAdd.appendChild(projectAddList);
 
     // Form Header Append
     projectFormHeader.appendChild(projectFormHeaderTitle);
@@ -130,6 +131,8 @@ import exitIcon from '../assets/exit.svg';
     projectForm.appendChild(projectActions);
     project.appendChild(formContainer);
 
+
+    //Project Sidebar Interactivity
     projectAddBtn.addEventListener("click", () => {
         formContainer.style.display = "flex";
         project.appendChild(formContainer);
@@ -157,9 +160,11 @@ import exitIcon from '../assets/exit.svg';
         projectForm.reset();
     });
 
+    const projectListParent = document.createElement("div");
+    projectListParent.classList.add("project__list");
 
     //project CRUD
-    const listofProjects = [];
+    let listofProjects = [];
 
 
     //Create Project 
@@ -170,6 +175,16 @@ import exitIcon from '../assets/exit.svg';
     }
 
 
+    //Delete Project
+    function handleDelete() {
+
+    }
+
+    //Edit Project
+    function handleEdit() {
+
+    }
+
     //Submit New Project
     function handleSubmit() {
         projectForm.addEventListener("submit", function(event) {
@@ -177,38 +192,31 @@ import exitIcon from '../assets/exit.svg';
             handleCreate();
             formContainer.style.display = "none";
             projectForm.reset();
-            renderProjectsCreated();
-
+            displayProjectCreated();
         });
     }
 
 
-    function renderProjectsCreated() {
+    function displayProjectCreated() {
+        // Clear the existing displayed projects
+        projectListParent.innerHTML = "";
+    
+        listofProjects.forEach((projects) => {
 
-    listofProjects.forEach((projects => {
-
-        const projectListParent = document.createElement("div");
-        projectListParent.classList.add("project__list");
-
-        const projectList = document.createElement("li");
-        projectList.classList.add("project__list-item");
-
-        const projectLink = document.createElement("a");
-        projectLink.href = "#";
-
-        // projectList.appendChild(projectList);
-       
-        projectLink.textContent = projects;
-        projectList.textContent = projects;
-        
-        projectListParent.appendChild(projectList);
-
-
-        projectAdd.appendChild(projectListParent);
-        
-    }));
-
+            const projectList = document.createElement("li");
+            projectList.classList.add("project__list-item");
+    
+            const projectLink = document.createElement("a");
+            projectLink.href = "#";
+            projectLink.textContent = projects;
+    
+            projectList.appendChild(projectLink);
+            projectListParent.appendChild(projectList);
+    
+            projectAdd.appendChild(projectListParent);
+        });
     }
+    
 
 
     handleSubmit();

@@ -58,25 +58,7 @@ function sidebar() {
         sidebarItem.appendChild(itemList);
 
         
-        // if (item.title === projectHeader.textContent) {
-        //     sidebarItem.addEventListener("mouseenter", () => {
  
-        //       sidebarItem.classList.add("show-add");
-        //       console.log("hover");
-        //       sidebarItem.appendChild(projectAddBtn);
-        //     });
-          
-        //     sidebarItem.addEventListener("mouseleave", () => {
-        //       sidebarItem.classList.remove("show-add");
-        //       console.log("leave");
-        //       if (sidebarItem.contains(projectAddBtn)) {
-        //         sidebarItem.removeChild(projectAddBtn);
-        //       }
-        //     });
-          
-        //     sidebarItem.addEventListener("focus", () => sidebarItem.classList.add("show-add"));
-        //     sidebarItem.addEventListener("blur",  () => sidebarItem.classList.remove("show-add"));
-        //   }
           
           
         

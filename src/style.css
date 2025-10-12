@@ -373,9 +373,15 @@ select {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
+    flex-direction: column ;
   }
+
+.project__container-add-list {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
   
 /* hidden by default */
 .project__btn-add {
@@ -388,7 +394,19 @@ select {
 }
 
 .project__list {
-    display: block;
+    width: 100%;
+    margin-top: 1em;
+    padding-left: 1em;
+    font-size: .75em;
+}
+
+.project__list-item {
+    margin-bottom: .75em;
+    cursor: pointer;
+}
+
+.project__list-item:hover {
+
 }
   
 /* show when hovering the sidebar link (class toggled on the page) */
