@@ -163,9 +163,20 @@ import exitIcon from '../assets/exit.svg';
     const projectListParent = document.createElement("div");
     projectListParent.classList.add("project__list");
 
+    //Project Add Project Task
+    const projectAddTaskBtn = document.createElement("button");
+    projectAddTaskBtn.classList.add("project__add-task");
+    projectAddTaskBtn.type = "submit";
+    projectAddTaskBtn.textContent = "Add Project Task"
+
+    const projectAddIcon = document.createElement("div");
+    projectAddIcon.classList.add("project__add-task-icon");
+    projectAddIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="red"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>`
     //project CRUD
     let listofProjects = [];
 
+    //to know which project is currently open
+    let activeProject = null
 
     //Create Project 
     function handleCreate() {
@@ -185,6 +196,7 @@ import exitIcon from '../assets/exit.svg';
 
     }
 
+
     //Submit New Project
     function handleSubmit() {
         projectForm.addEventListener("submit", function(event) {
@@ -201,21 +213,180 @@ import exitIcon from '../assets/exit.svg';
         // Clear the existing displayed projects
         projectListParent.innerHTML = "";
     
-        listofProjects.forEach((projects) => {
+        listofProjects.forEach((projects, index) => {
 
             const projectList = document.createElement("li");
             projectList.classList.add("project__list-item");
+
+            // Assign index in each project
+            projectList.dataset.index = index;
+
+            // Add a click event to see which project was clicked
+            projectList.addEventListener("click", () => {
+                console.log("Clicked project:", listofProjects[index]);
+                project.innerHTML = "";
+
+                const projectListHeader = document.createElement("h1");
+                projectListHeader.classList.add("project__list-header");
+                projectListHeader.textContent = listofProjects[index];
+                console.log(projectListHeader);
+
+       
+
+                project.appendChild(projectListHeader)
+                projectAddTaskBtn.appendChild(projectAddIcon);
+                project.appendChild(projectAddTaskBtn);
+
+                // Open Project Task Form when the project task button clicked
+                projectAddTaskBtn.addEventListener("click", () => {
+                    addProjectTaskForm();
+                    // project.innerHTML = "";
+                    projectAddTaskBtn.style.display = "none";
+                });
+
+;
+            
+            });
     
             const projectLink = document.createElement("a");
             projectLink.href = "#";
+            
             projectLink.textContent = projects;
     
             projectList.appendChild(projectLink);
             projectListParent.appendChild(projectList);
     
             projectAdd.appendChild(projectListParent);
+          
         });
     }
+
+
+    function addProjectTaskForm() {
+
+        //Project task form container
+        const projectTaskFormContainer = document.createElement("div");
+        projectTaskFormContainer.classList.add("project__task-form-container");
+
+        //Project task form
+        const projectTaskForm = document.createElement("form");
+        projectTaskForm.classList.add("project__task-form");
+        projectTaskForm.setAttribute("method", "POST");
+        projectTaskForm.setAttribute("action", "");
+
+        const projectTaskHeadings = document.createElement("h1");
+        projectTaskHeadings.classList.add("project__task-headings");
+
+
+        //Project Task Title
+        const projectTaskTitleParent = document.createElement("div");
+        projectTaskTitleParent.classList.add("project__task-title-parent");
+
+
+        const projectTaskTitleInput = document.createElement("input");
+        projectTaskTitleInput.classList.add("project__task-title-input");
+        projectTaskTitleInput.type = "text";
+        projectTaskTitleInput.id = "project-task-title";
+        projectTaskTitleInput.name = "project-task-title";
+        projectTaskTitleInput.placeholder = "Title";
+        projectTaskTitleInput.required = true;
+
+        projectTaskTitleParent.appendChild(projectTaskTitleInput);
+
+        //Project Task Description
+        const projectTaskDescriptionParent = document.createElement("div");
+        projectTaskDescriptionParent.classList.add("project__task-description-parent");
+
+        const projectTaskDescriptionInput = document.createElement("input");
+        projectTaskDescriptionInput.classList.add("project__task-title-input");
+        projectTaskDescriptionInput.type = "text";
+        projectTaskDescriptionInput.id = "project-task-description";
+        projectTaskDescriptionInput.name = "project-task-description";
+        projectTaskDescriptionInput.placeholder = "Description";
+        projectTaskDescriptionInput.required = true;
+
+        projectTaskDescriptionParent.appendChild(projectTaskDescriptionInput);
+
+
+        const projectTaskPriorityDateParent = document.createElement("div");
+        projectTaskPriorityDateParent.classList.add("project__task-priority-date-parent");
+
+        //Project Task Date
+        const projectTaskDateParent = document.createElement("div");
+        projectTaskDateParent.classList.add("project__task-date-parent");
+
+        const projectTaskDateInput = document.createElement("input");
+        projectTaskDateInput.classList.add("project__task-date-input");
+        projectTaskDateInput.placeholder = "Date";
+        projectTaskDateInput.type = "date";
+        projectTaskDateInput.id = "project-task-date";
+        projectTaskDateInput.name = "project-task-name";
+        projectTaskDateInput.required = true;
+
+        projectTaskDateParent.appendChild(projectTaskDateInput);
+
+        //Project Task Priority
+        const projectTaskPriorityParent = document.createElement("div");
+        projectTaskPriorityParent.classList.add("project__task-priority-parent");
+
+        const projectTaskPriorityInput = document.createElement("select");
+        projectTaskPriorityInput.classList.add("project__task-priority-input");
+        projectTaskPriorityInput.id = "project-task-priority";
+        projectTaskPriorityInput.name = "project-task-priority";
+        projectTaskPriorityInput.required = true;
+
+        const projectTaskPriorityOption = document.createElement("option");
+        projectTaskPriorityOption.textContent = "Priority";
+        projectTaskPriorityOption.value = "";
+        projectTaskPriorityOption.disabled = true;
+        projectTaskPriorityOption.selected = true;
+
+        projectTaskPriorityInput.appendChild(projectTaskPriorityOption);
+        projectTaskPriorityParent.appendChild(projectTaskPriorityInput)
+
+
+        projectTaskPriorityDateParent.appendChild(projectTaskPriorityParent);
+        projectTaskPriorityDateParent.appendChild(projectTaskDateParent);
+
+        
+
+        //Project Task Actions
+        const projectTaskActionsParent = document.createElement("div");
+        projectTaskActionsParent.classList.add("project__task-actions-parent");
+
+        const projectTaskCancel = document.createElement("button");
+        projectTaskCancel.classList.add("project__task-cancel");
+        projectTaskCancel.textContent = "Cancel";
+
+        const projectTaskAdd = document.createElement("button");
+        projectTaskAdd.classList.add("project__task-add");
+        projectTaskAdd.type = "submut";
+        projectTaskAdd.textContent = "Add Task";
+
+        projectTaskActionsParent.appendChild(projectTaskAdd);
+        projectTaskActionsParent.appendChild(projectTaskCancel);
+
+        projectTaskForm.appendChild(projectTaskTitleParent);
+        projectTaskForm.appendChild(projectTaskDescriptionParent);
+        // projectTaskForm.appendChild(projectTaskDateParent);
+        projectTaskForm.appendChild(projectTaskPriorityDateParent);
+        projectTaskForm.appendChild(projectTaskActionsParent);
+        project.appendChild(projectTaskForm);
+
+
+
+        projectTaskCancel.addEventListener("click", () => {
+            projectTaskForm.reset();
+            projectTaskForm.style.display = "none";
+            projectAddTaskBtn.style.display = "flex";
+        });
+    }
+
+    function handleCreateProjectTask() {
+        //Render projects
+    }
+
+
     
 
 

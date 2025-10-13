@@ -56,10 +56,6 @@ function sidebar() {
         
         itemList.appendChild(link);       
         sidebarItem.appendChild(itemList);
-
-        
- 
-          
           
         
         link.addEventListener('click', (e) => {

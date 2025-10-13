@@ -99,7 +99,6 @@ export function createTaskForm(sectionName = "inbox") {
 
     const priorityTask = document.createElement("select");
     priorityTask.classList.add("inbox__select");
-
     priorityTask.id = "task-select";
     priorityTask.name = "task-select";
     priorityTask.required = true;

@@ -374,6 +374,7 @@ select {
     display: flex;
     align-items: center;
     flex-direction: column ;
+    cursor: pointer;
   }
 
 .project__container-add-list {
@@ -533,3 +534,46 @@ select {
 .project__btn-cancel:hover {
     background-color: var(--gray);
 }
+
+.project__add-task {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    margin-top: 1em;
+    background-color: var(--white);
+    border: none;
+    gap: 1em;
+}
+
+.project__add-task-icon {
+    width: 15px;
+    margin-top: .35em; 
+    /* filter: brightness(0) invert(1); */
+
+}
+
+.project__task-form-container {
+    width: 100%;
+}
+
+.project__task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    border: 1px solid var(--gray);
+    border-radius: .75rem;
+    padding: .75em;
+}
+
+.project__task-title-input {
+    width: 100%;
+    padding: .25rem;
+    background-color: white;
+    border: none;
+}
+
+.project__task-priority-date-parent {
+    display: flex;
+    gap: 1em;
+}
+
