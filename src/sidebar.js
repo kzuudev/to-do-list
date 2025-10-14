@@ -1,7 +1,7 @@
 import todoListParent from "./todo-list.js";
 import today from './today';
 import lastWeek from './lastWeek';
-import project, { projectHeader, projectAddBtn, projectAdd }from './project.js';
+import project, { projectHeader, projectAdd, projectAddTaskBtn, addProjectTaskForm, projectAddBtn, displayProjectCreated, projectListHeader, projectsHeader, projectMain, projectListDetail} from './project.js';
 import './style.css'
 
 function todoList() {
@@ -69,23 +69,50 @@ function sidebar() {
             });
         });
 
+         
+        project.appendChild(projectsHeader);
+        
         const projectListItem = document.createElement("li");
         projectListItem.classList.add("sidebar__item-list");
         projectListItem.appendChild(projectAdd);  // contains My Projects + button
         sidebarItem.appendChild(projectListItem);
-
+        
+         //Append Project Main View (My Projects with list of project)
+         projectMain.style.display = "none";
         // handle My Projects click manually
         projectListItem.addEventListener("click", (e) => {
             e.preventDefault();
         
-            // hide all pages first
+            // Hide all other sections
             for (let page in pageSections) {
-            pageSections[page].style.display = "none";
+                pageSections[page].style.display = "none";
             }
         
-            // show My Projects section
+            // Show My Projects section
             pageSections["My Projects"].style.display = "block";
+         
+            // Show My Projects header only
+            projectMain.style.display = "flex";
+            projectListHeader.style.display = "none";
+            projectAddTaskBtn.style.display = "none";
+       
         });
+
+        projectMain.appendChild(projectsHeader);
+        projectMain.appendChild(projectListDetail);
+
+        project.appendChild(projectMain);
+        
+
+        // Open Project Task Form when the project task button clicked
+        projectAddBtn.addEventListener("click", () => {
+            displayProjectCreated();
+            
+        });
+
+        
+
+
   
       
     return sidebarItem;

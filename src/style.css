@@ -122,7 +122,7 @@ select {
     margin-top: 10rem;
 }
 
-.add__task-btn {
+.add__task-btn  {
     max-width: 20%;
     display: flex;
     flex-direction: row-reverse;
@@ -169,18 +169,18 @@ select {
     border: none;
 }
 
-.inbox__select {
+.inbox__select, .project__task-priority-input {
     padding: .45em;
     background-color: var(--white);
     border: 1px solid black;
     border-radius: .25em;
 }
 
-.inbox__select:hover {
+.inbox__select:hover, .project__task-priority-input:hover {
     background-color: var(--gray-100);
 }
 
-.inbox__date {
+.inbox__date, .project__task-date-input {
     padding: .35em;
 }
 
@@ -195,7 +195,7 @@ select {
     gap: 1rem;
 }
 
-.todo__save-task {
+.todo__save-task, .project__task-add {
     padding: .75em;
     border: none;
     border-radius: .45em;
@@ -203,12 +203,11 @@ select {
 }
 
 
-
-.todo__save-task:hover {
+.todo__save-task:hover,  .project__task-add:hover {
     background-color: var(--red);
 }
 
-.todo__cancel-task {
+.todo__cancel-task,  .project__task-cancel {
     padding: .75em;
     border: none;
     border-radius: .45em;
@@ -467,8 +466,14 @@ select {
     width: 16px;
 }
 
+
 .project__wrapper {
     display: none;
+}
+
+.projects__header {
+    border-bottom: 1px solid var(--gray);
+    padding-bottom: .75em;
 }
 
 .project__form {
@@ -539,19 +544,22 @@ select {
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
-    margin-top: 1em;
+    margin-top: 2em;
+    color: gray;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 100;
     background-color: var(--white);
     border: none;
     gap: 1em;
 }
 
 .project__add-task-icon {
-    width: 15px;
-    margin-top: .35em; 
+    width: 13px;
+    margin-top: .30em; 
     /* filter: brightness(0) invert(1); */
-
 }
 
+    
 .project__task-form-container {
     width: 100%;
 }
@@ -559,10 +567,11 @@ select {
 .project__task-form {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    padding: .75em;
+    margin-top: 1rem;
     border: 1px solid var(--gray);
     border-radius: .75rem;
-    padding: .75em;
+    gap: 1em;
 }
 
 .project__task-title-input {
@@ -576,4 +585,13 @@ select {
     display: flex;
     gap: 1em;
 }
+
+.project__task-actions-parent {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    margin-top: 1em;
+    gap: 1em;
+}
+
 
