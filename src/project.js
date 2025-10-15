@@ -174,6 +174,7 @@ import sidebar from './sidebar';
     projectAddIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="red" fill-opacity="0.8"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>`
     
     projectAddTaskBtn.appendChild(projectAddIcon);
+    
     //Main Section of Project
     export const projectMain = document.createElement("div");
     projectMain.classList.add("project__main-view");
@@ -232,16 +233,20 @@ import sidebar from './sidebar';
             formContainer.style.display = "none";
             projectForm.reset();
             displayProjectCreated(); 
-            
-            
         });
     }
 
 
     export function displayProjectCreated() {
+
+        // Create the form ONCE, outside the loop
+        // const { projectTaskForm, projectTaskFormContainer } = addProjectTaskForm();
+        // projectTaskFormContainer.style.display = "none";
+        // projectTaskForm.style.display = "none";
+
+
         // Clear previous project items
         projectListParent.innerHTML = "";
-
 
         // Loop through all created projects
         listofProjects.forEach((projects, index) => {
@@ -260,24 +265,34 @@ import sidebar from './sidebar';
             // When a project is clicked
             projectList.addEventListener("click", () => {
                 console.log("Clicked project:", listofProjects[index]);
-            
                 projectListHeader.textContent = listofProjects[index];
-            
+
+                 // Clear previous selected project 
+                selectedProjectView.innerHTML = "";
+
                 // Hide main "My Projects" view
                 projectMain.style.display = "none";
                 projectsHeader.style.display = "none";
-            
+                
                 // Show selected project details
                 selectedProjectView.style.display = "flex";
                 console.log(selectedProjectView.isConnected);
 
                 projectListHeader.style.display = "flex";
                 projectAddTaskBtn.style.display = "flex";
-            
+
+                 // Hide the form when switching projects
+                 const checkExistingForm = document.querySelector('.project__task-form-container');
+                 if (checkExistingForm) {
+                    checkExistingForm.style.display = "none";
+                 }
+
+               
+
                 // Append elements to selectedProjectView 
                 selectedProjectView.appendChild(projectListHeader);
                 selectedProjectView.appendChild(projectAddTaskBtn);
-                
+
             });
             
         });
@@ -288,13 +303,6 @@ import sidebar from './sidebar';
      // Append the project list only once (re-append keeps order but not duplicates)
      projectAdd.appendChild(projectListParent);
     
-     // Open Project Task Form when the project task button clicked
-    projectAddTaskBtn.addEventListener("click", () => {
-        addProjectTaskForm();
-        projectAddTaskBtn.style.display = "none";
-        
-    });
-
     export function addProjectTaskForm() {
 
         //Project task form container
@@ -398,10 +406,10 @@ import sidebar from './sidebar';
 
         projectTaskForm.appendChild(projectTaskTitleParent);
         projectTaskForm.appendChild(projectTaskDescriptionParent);
-        // projectTaskForm.appendChild(projectTaskDateParent);
         projectTaskForm.appendChild(projectTaskPriorityDateParent);
         projectTaskForm.appendChild(projectTaskActionsParent);
-        project.appendChild(projectTaskForm);
+        projectTaskFormContainer.appendChild(projectTaskForm);
+        project.appendChild(projectTaskFormContainer);
 
 
         projectTaskCancel.addEventListener("click", () => {
@@ -409,7 +417,20 @@ import sidebar from './sidebar';
             projectTaskForm.style.display = "none";
             projectAddTaskBtn.style.display = "flex";
         });
+
+        return {
+            projectTaskFormContainer: projectTaskFormContainer,
+            projectTaskForm: projectTaskForm,
+        }
+        
     }
+
+    // Open Project Task Form when the project task button clicked
+    projectAddTaskBtn.addEventListener("click", () => {
+        addProjectTaskForm();
+        projectAddTaskBtn.style.display = "none";
+    });
+
 
     function handleCreateProjectTask() {
         //Render projects

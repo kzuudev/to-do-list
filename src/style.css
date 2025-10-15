@@ -578,10 +578,12 @@ select {
  
 
 .project__task-form-container {
+    display: flex;
     width: 100%;
 }
 
 .project__task-form {
+    width: 100%;
     display: flex;
     flex-direction: column;
     padding: .75em;
