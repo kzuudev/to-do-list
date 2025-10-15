@@ -1,7 +1,7 @@
 import todoListParent from "./todo-list.js";
 import today from './today';
 import lastWeek from './lastWeek';
-import project, { projectHeader, projectAdd, projectAddTaskBtn, addProjectTaskForm, projectAddBtn, displayProjectCreated, projectListHeader, projectsHeader, projectMain, projectListDetail} from './project.js';
+import project, { projectHeader, projectAdd, projectAddTaskBtn, addProjectTaskForm, projectAddBtn, displayProjectCreated, projectListHeader, projectsHeader, projectMain, projectListDetail, selectedProjectView} from './project.js';
 import './style.css'
 
 function todoList() {
@@ -69,7 +69,7 @@ function sidebar() {
             });
         });
 
-         
+        project.appendChild(projectMain);
         project.appendChild(projectsHeader);
         
         const projectListItem = document.createElement("li");
@@ -78,30 +78,34 @@ function sidebar() {
         sidebarItem.appendChild(projectListItem);
         
          //Append Project Main View (My Projects with list of project)
-         projectMain.style.display = "none";
+         projectMain.style.display = "flex";
+
         // handle My Projects click manually
-        projectListItem.addEventListener("click", (e) => {
+        projectHeader.addEventListener("click", (e) => {
             e.preventDefault();
-        
-            // Hide all other sections
+            console.log(projectMain.isConnected);
+            // Hide other sections (Inbox, Today, etc.)
             for (let page in pageSections) {
                 pageSections[page].style.display = "none";
             }
         
             // Show My Projects section
             pageSections["My Projects"].style.display = "block";
-         
-            // Show My Projects header only
+        
+            // ✅ Show My Projects main view
             projectMain.style.display = "flex";
+            projectsHeader.style.display = "flex";
+        
+            // ✅ Hide selected project view
+            selectedProjectView.style.display = "none";
             projectListHeader.style.display = "none";
             projectAddTaskBtn.style.display = "none";
-       
         });
+        
 
-        projectMain.appendChild(projectsHeader);
-        projectMain.appendChild(projectListDetail);
+     
 
-        project.appendChild(projectMain);
+        
         
 
         // Open Project Task Form when the project task button clicked

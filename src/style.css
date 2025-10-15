@@ -471,10 +471,6 @@ select {
     display: none;
 }
 
-.projects__header {
-    border-bottom: 1px solid var(--gray);
-    padding-bottom: .75em;
-}
 
 .project__form {
     width: 100%;
@@ -542,8 +538,9 @@ select {
 
 .project__add-task {
     display: flex;
-    flex-direction: row-reverse;
     align-items: center;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
     margin-top: 2em;
     color: gray;
     font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -559,7 +556,27 @@ select {
     /* filter: brightness(0) invert(1); */
 }
 
+.project__main-view {
+    width: 100%;
+
+}
+
+.project__selected-view {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    /* flex-direction: column; */
+   
+
+}
     
+.projects__header {
+    width: 100%;
+    border-bottom: 1px solid var(--gray);
+    padding-bottom: .75em;
+}
+ 
+
 .project__task-form-container {
     width: 100%;
 }

@@ -114,6 +114,10 @@ import sidebar from './sidebar';
     projectFormHeader.appendChild(projectFormHeaderTitle);
     projectFormHeader.appendChild(projectHeaderExit);
 
+    // Project Input Append
+    projectTitleItem.appendChild(projectLabel);
+    projectTitleItem.appendChild(projectInput);
+
     // Form Actions Append
     projectActions.appendChild(cancelProjectBtn);
     projectActions.appendChild(saveProjectBtn);
@@ -122,15 +126,10 @@ import sidebar from './sidebar';
     formContainer.appendChild(projectFormHeader);
     formContainer.appendChild(projectForm);
     
-    // Project Input Append
-    projectTitleItem.appendChild(projectLabel);
-    projectTitleItem.appendChild(projectInput);
-
-
     // Project Form Append
     projectForm.appendChild(projectTitleItem);
     projectForm.appendChild(projectActions);
-    project.appendChild(formContainer);
+    // project.appendChild(formContainer);
 
 
     //Project Sidebar Interactivity
@@ -174,6 +173,7 @@ import sidebar from './sidebar';
     projectAddIcon.classList.add("project__add-task-icon");
     projectAddIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="red" fill-opacity="0.8"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>`
     
+    projectAddTaskBtn.appendChild(projectAddIcon);
     //Main Section of Project
     export const projectMain = document.createElement("div");
     projectMain.classList.add("project__main-view");
@@ -188,6 +188,9 @@ import sidebar from './sidebar';
 
     export const projectListHeader = document.createElement("h1");
     projectListHeader.classList.add("project__list-header");
+
+    export const selectedProjectView = document.createElement("div");
+    selectedProjectView.classList.add("project__selected-view");
 
     //project CRUD
     export let listofProjects = [];
@@ -238,9 +241,11 @@ import sidebar from './sidebar';
     export function displayProjectCreated() {
         // Clear previous project items
         projectListParent.innerHTML = "";
-    
+
+
         // Loop through all created projects
         listofProjects.forEach((projects, index) => {
+
             const projectList = document.createElement("li");
             projectList.classList.add("project__list-item");
             projectList.dataset.index = index;
@@ -249,39 +254,40 @@ import sidebar from './sidebar';
             projectLink.href = "#";
             projectLink.textContent = projects;
     
-
             projectList.appendChild(projectLink);
             projectListParent.appendChild(projectList);
-            // projectListDetail.appendChild(projectList);
 
             // When a project is clicked
             projectList.addEventListener("click", () => {
                 console.log("Clicked project:", listofProjects[index]);
+            
                 projectListHeader.textContent = listofProjects[index];
             
-                // hide My Projects main
+                // Hide main "My Projects" view
                 projectMain.style.display = "none";
-
-                // hide project details
-                projectListDetail.style.display = "none";
-
-                // hide project header 
                 projectsHeader.style.display = "none";
+            
+                // Show selected project details
+                selectedProjectView.style.display = "flex";
+                console.log(selectedProjectView.isConnected);
 
-
-                // update header or title if needed
                 projectListHeader.style.display = "flex";
                 projectAddTaskBtn.style.display = "flex";
-             
-               
+            
+                // Append elements to selectedProjectView 
+                selectedProjectView.appendChild(projectListHeader);
+                selectedProjectView.appendChild(projectAddTaskBtn);
+                
             });
+            
         });
-    
-        // Append the project list only once (re-append keeps order but not duplicates)
-        projectAdd.appendChild(projectListParent);
+
+        project.appendChild(selectedProjectView);
     }
     
-
+     // Append the project list only once (re-append keeps order but not duplicates)
+     projectAdd.appendChild(projectListParent);
+    
      // Open Project Task Form when the project task button clicked
     projectAddTaskBtn.addEventListener("click", () => {
         addProjectTaskForm();
@@ -374,8 +380,6 @@ import sidebar from './sidebar';
         projectTaskPriorityDateParent.appendChild(projectTaskDateParent);
         projectTaskPriorityDateParent.appendChild(projectTaskPriorityParent);
      
-
-    
         //Project Task Actions
         const projectTaskActionsParent = document.createElement("div");
         projectTaskActionsParent.classList.add("project__task-actions-parent");
@@ -386,7 +390,7 @@ import sidebar from './sidebar';
 
         const projectTaskAdd = document.createElement("button");
         projectTaskAdd.classList.add("project__task-add");
-        projectTaskAdd.type = "submut";
+        projectTaskAdd.type = "submit";
         projectTaskAdd.textContent = "Add Task";
 
         projectTaskActionsParent.appendChild(projectTaskAdd);
