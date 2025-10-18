@@ -558,22 +558,29 @@ select {
 
 .project__main-view {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
+.project__detail-view {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: .75em;
 }
 
 .project__selected-view {
     width: 100%;
     display: none;
     flex-direction: column;
-    /* flex-direction: column; */
    
-
 }
     
 .projects__header {
     width: 100%;
     border-bottom: 1px solid var(--gray);
     padding-bottom: .75em;
+    margin-bottom: 1em;
 }
  
 

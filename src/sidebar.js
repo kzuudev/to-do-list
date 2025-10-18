@@ -45,6 +45,8 @@ function sidebar() {
         console.log( pageSections[key] = section)
     }
 
+
+
     sidebarItemList.forEach((item) => {
 
         const itemList = document.createElement("li");
@@ -69,9 +71,11 @@ function sidebar() {
             });
         });
 
+  
         project.appendChild(projectMain);
-        project.appendChild(projectsHeader);
-        
+        projectMain.appendChild(projectsHeader);
+        projectMain.appendChild(projectListDetail);
+
         const projectListItem = document.createElement("li");
         projectListItem.classList.add("sidebar__item-list");
         projectListItem.appendChild(projectAdd);  // contains My Projects + button
@@ -84,6 +88,7 @@ function sidebar() {
         projectHeader.addEventListener("click", (e) => {
             e.preventDefault();
             console.log(projectMain.isConnected);
+            
             // Hide other sections (Inbox, Today, etc.)
             for (let page in pageSections) {
                 pageSections[page].style.display = "none";
@@ -92,26 +97,23 @@ function sidebar() {
             // Show My Projects section
             pageSections["My Projects"].style.display = "block";
         
-            // ✅ Show My Projects main view
+            // Show My Projects main view
             projectMain.style.display = "flex";
             projectsHeader.style.display = "flex";
-        
-            // ✅ Hide selected project view
+            projectListDetail.style.display = "flex";
+
+            // Hide selected project view
             selectedProjectView.style.display = "none";
             projectListHeader.style.display = "none";
             projectAddTaskBtn.style.display = "none";
         });
         
 
-     
-
-        
-        
-
+    
+    
         // Open Project Task Form when the project task button clicked
         projectAddBtn.addEventListener("click", () => {
             displayProjectCreated();
-            
         });
 
         

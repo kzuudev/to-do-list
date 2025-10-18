@@ -183,6 +183,8 @@ import sidebar from './sidebar';
     export const projectListDetail = document.createElement("div");
     projectListDetail.classList.add("project__detail-view");
 
+     
+
     export const projectsHeader = document.createElement("h1");
     projectsHeader.classList.add("projects__header");
     projectsHeader.textContent = "My Projects";
@@ -239,18 +241,15 @@ import sidebar from './sidebar';
 
     export function displayProjectCreated() {
 
-        // Create the form ONCE, outside the loop
-        // const { projectTaskForm, projectTaskFormContainer } = addProjectTaskForm();
-        // projectTaskFormContainer.style.display = "none";
-        // projectTaskForm.style.display = "none";
-
-
         // Clear previous project items
         projectListParent.innerHTML = "";
+        projectListDetail.innerHTML = "";
 
         // Loop through all created projects
         listofProjects.forEach((projects, index) => {
 
+
+            //List of Project for Sidebar
             const projectList = document.createElement("li");
             projectList.classList.add("project__list-item");
             projectList.dataset.index = index;
@@ -259,6 +258,26 @@ import sidebar from './sidebar';
             projectLink.href = "#";
             projectLink.textContent = projects;
     
+            
+
+            //List of Project for Main View
+            const projectListMain = document.createElement("li");
+            projectListMain.classList.add("project__list-main");
+            projectListMain.dataset.index = index;
+
+            const projectLinkMain = document.createElement("a");
+            projectLinkMain.href = "#";
+            projectLinkMain.textContent = projects;
+    
+            //check if the project list is not equal to 0
+            if(listofProjects.length > 0) {
+                projectListMain.appendChild(projectLinkMain);
+                projectListDetail.appendChild(projectListMain);
+                console.log("Project List Added");
+            }
+
+
+
             projectList.appendChild(projectLink);
             projectListParent.appendChild(projectList);
 
@@ -288,7 +307,6 @@ import sidebar from './sidebar';
                  }
 
                
-
                 // Append elements to selectedProjectView 
                 selectedProjectView.appendChild(projectListHeader);
                 selectedProjectView.appendChild(projectAddTaskBtn);
