@@ -248,7 +248,6 @@ import sidebar from './sidebar';
         // Loop through all created projects
         listofProjects.forEach((projects, index) => {
 
-
             //List of Project for Sidebar
             const projectList = document.createElement("li");
             projectList.classList.add("project__list-item");
@@ -258,7 +257,6 @@ import sidebar from './sidebar';
             projectLink.href = "#";
             projectLink.textContent = projects;
     
-            
 
             //List of Project for Main View
             const projectListMain = document.createElement("li");
@@ -276,42 +274,42 @@ import sidebar from './sidebar';
                 console.log("Project List Added");
             }
 
-
-
             projectList.appendChild(projectLink);
             projectListParent.appendChild(projectList);
 
-            // When a project is clicked
-            projectList.addEventListener("click", () => {
-                console.log("Clicked project:", listofProjects[index]);
-                projectListHeader.textContent = listofProjects[index];
+            // When a specific project is clicked from project main view and
+           [projectList, projectListMain].forEach((projectsList) => {
+                projectsList.addEventListener("click", () => {
+                    console.log("Clicked project:", listofProjects[index]);
+                    projectListHeader.textContent = listofProjects[index];
 
-                 // Clear previous selected project 
-                selectedProjectView.innerHTML = "";
+                    // Clear previous selected project 
+                    selectedProjectView.innerHTML = "";
 
-                // Hide main "My Projects" view
-                projectMain.style.display = "none";
-                projectsHeader.style.display = "none";
-                
-                // Show selected project details
-                selectedProjectView.style.display = "flex";
-                console.log(selectedProjectView.isConnected);
+                    // Hide main "My Projects" view
+                    projectMain.style.display = "none";
+                    projectsHeader.style.display = "none";
+                    
+                    // Show selected project details
+                    selectedProjectView.style.display = "flex";
+                    console.log(selectedProjectView.isConnected);
 
-                projectListHeader.style.display = "flex";
-                projectAddTaskBtn.style.display = "flex";
+                    projectListHeader.style.display = "flex";
+                    projectAddTaskBtn.style.display = "flex";
 
-                 // Hide the form when switching projects
-                 const checkExistingForm = document.querySelector('.project__task-form-container');
-                 if (checkExistingForm) {
-                    checkExistingForm.style.display = "none";
-                 }
+                    // Hide the form when switching projects
+                    const checkExistingForm = document.querySelector('.project__task-form-container');
+                    if (checkExistingForm) {
+                        checkExistingForm.style.display = "none";
+                    }
 
-               
-                // Append elements to selectedProjectView 
-                selectedProjectView.appendChild(projectListHeader);
-                selectedProjectView.appendChild(projectAddTaskBtn);
+                    // Append elements to selectedProjectView 
+                    selectedProjectView.appendChild(projectListHeader);
+                    selectedProjectView.appendChild(projectAddTaskBtn);
 
-            });
+                });
+           }); 
+          
             
         });
 
