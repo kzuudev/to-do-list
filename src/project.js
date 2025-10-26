@@ -1,6 +1,18 @@
 import './style.css'
 import exitIcon from '../assets/exit.svg';
+import deleteIcon from '../assets/delete.svg';
+import editIcon from '../assets/edit.svg';
 import sidebar from './sidebar';
+
+    class projectTask {
+        constructor(title, description, priority, date) {
+            this.id = Date.now();
+            this.title = title;
+            this.description = description;
+            this.priority = priority;
+            this.date = date;
+        }
+    }
 
     // Main Project
     export const project = document.createElement("div");
@@ -183,8 +195,7 @@ import sidebar from './sidebar';
     export const projectListDetail = document.createElement("div");
     projectListDetail.classList.add("project__detail-view");
 
-     
-
+    
     export const projectsHeader = document.createElement("h1");
     projectsHeader.classList.add("projects__header");
     projectsHeader.textContent = "My Projects";
@@ -197,47 +208,10 @@ import sidebar from './sidebar';
 
     //project CRUD
     export let listofProjects = [];
+    let allProjectTasks = [];
 
     //to know which project is currently open
-    let activeProject = null
-
-    //Create Project 
-    function handleCreate() {
-        let projects = projectInput.value;
-        listofProjects.push(projects);
-        console.log(listofProjects);
-
-        const newProject = listofProjects.length - 1;
-        
-        console.log(newProject);
-
-        return newProject;
-        
-    }
-
-
-    //Delete Project
-    function handleDelete() {
-
-    }
-
-    //Edit Project
-    function handleEdit() {
-
-    }
-
-
-    //Submit New Project
-    function handleSubmit() {
-        projectForm.addEventListener("submit", function(event) {
-            event.preventDefault();
-            handleCreate();
-            formContainer.style.display = "none";
-            projectForm.reset();
-            displayProjectCreated(); 
-        });
-    }
-
+    // let activeProject = null
 
     export function displayProjectCreated() {
 
@@ -252,6 +226,7 @@ import sidebar from './sidebar';
             const projectList = document.createElement("li");
             projectList.classList.add("project__list-item");
             projectList.dataset.index = index;
+            
     
             const projectLink = document.createElement("a");
             projectLink.href = "#";
@@ -282,6 +257,7 @@ import sidebar from './sidebar';
                 projectsList.addEventListener("click", () => {
                     console.log("Clicked project:", listofProjects[index]);
                     projectListHeader.textContent = listofProjects[index];
+                    
 
                     // Clear previous selected project 
                     selectedProjectView.innerHTML = "";
@@ -307,19 +283,33 @@ import sidebar from './sidebar';
                     selectedProjectView.appendChild(projectListHeader);
                     selectedProjectView.appendChild(projectAddTaskBtn);
 
+                    const projectformElements = addProjectTaskForm();
+                    selectedProjectView.appendChild(projectformElements.projectTaskFormContainer);
+            
                 });
            }); 
           
             
         });
 
+         // Append the project list only once (re-append keeps order but not duplicates)
         project.appendChild(selectedProjectView);
+        projectAdd.appendChild(projectListParent);
+       
     }
     
-     // Append the project list only once (re-append keeps order but not duplicates)
-     projectAdd.appendChild(projectListParent);
+    
     
     export function addProjectTaskForm() {
+
+
+        // Check if form already exists to prevent duplicates
+        const existingForm = document.querySelector('.project__task-form');
+        if (existingForm) {
+            console.warn("A project task form already exists!");
+            return; // stop creating another one
+        }
+
 
         //Project task form container
         const projectTaskFormContainer = document.createElement("div");
@@ -355,7 +345,7 @@ import sidebar from './sidebar';
         projectTaskDescriptionParent.classList.add("project__task-description-parent");
 
         const projectTaskDescriptionInput = document.createElement("input");
-        projectTaskDescriptionInput.classList.add("project__task-title-input");
+        projectTaskDescriptionInput.classList.add("project__task-description-input");
         projectTaskDescriptionInput.type = "text";
         projectTaskDescriptionInput.id = "project-task-description";
         projectTaskDescriptionInput.name = "project-task-description";
@@ -393,10 +383,26 @@ import sidebar from './sidebar';
         projectTaskPriorityInput.required = true;
 
         const projectTaskPriorityOption = document.createElement("option");
-        projectTaskPriorityOption.textContent = "Priority";
+        projectTaskPriorityOption.textContent = "Priority"
         projectTaskPriorityOption.value = "";
         projectTaskPriorityOption.disabled = true;
         projectTaskPriorityOption.selected = true;
+
+        //priority input
+        const projectPriorityOptions = [
+            { value: "low", text: "Low" },
+            { value: "medium", text: "Medium" },
+            { value: "high", text: "High" },
+        ];
+
+        projectPriorityOptions.forEach(projectOption => {
+            const projectOptions = document.createElement("option");
+            projectOptions.classList.add("project__task-select-options");
+            projectOptions.textContent = projectOption.text;
+            projectOptions.value = projectOption.value;
+            
+            projectTaskPriorityInput.appendChild(projectOptions);
+        });
 
         projectTaskPriorityInput.appendChild(projectTaskPriorityOption);
         projectTaskPriorityParent.appendChild(projectTaskPriorityInput)
@@ -425,8 +431,21 @@ import sidebar from './sidebar';
         projectTaskForm.appendChild(projectTaskPriorityDateParent);
         projectTaskForm.appendChild(projectTaskActionsParent);
         projectTaskFormContainer.appendChild(projectTaskForm);
-        project.appendChild(projectTaskFormContainer);
+        
 
+         // Open Project Task Form when the project task button clicked
+         projectAddTaskBtn.addEventListener("click", () => {
+            const projectsTasksform = document.querySelector('.project__task-form');
+            const projectTasksFormContainer = document.querySelector('.project__task-form-container');
+            if (projectTasksFormContainer && projectsTasksform) {
+                console.log(projectTasksFormContainer);
+                console.log(projectsTasksform);
+                console.log(document.querySelectorAll('.project__task-form-container').length);
+                projectTasksFormContainer.style.display = "flex";
+                projectsTasksform.style.display = "flex";
+                projectAddTaskBtn.style.display = "none";
+            }
+        });
 
         projectTaskCancel.addEventListener("click", () => {
             projectTaskForm.reset();
@@ -434,28 +453,143 @@ import sidebar from './sidebar';
             projectAddTaskBtn.style.display = "flex";
         });
 
+
+        handleProjectTaskSubmit(projectTaskForm);
+
+
         return {
             projectTaskFormContainer: projectTaskFormContainer,
             projectTaskForm: projectTaskForm,
+            projectTaskTitleInput: projectTaskTitleInput,
+            projectTaskDescriptionInput: projectTaskDescriptionInput,
+            projectTaskPriorityInput: projectTaskPriorityInput,
+            projectTaskDateInput: projectTaskDateInput
+
+
         }
         
     }
 
-    // Open Project Task Form when the project task button clicked
-    projectAddTaskBtn.addEventListener("click", () => {
-        addProjectTaskForm();
-        projectAddTaskBtn.style.display = "none";
-    });
+   
 
+    //Create Project 
+    function handleCreate() {
+        let projects = projectInput.value;
+        listofProjects.push(projects);
+        console.log(listofProjects);
 
-    function handleCreateProjectTask() {
-        //Render projects
+        const newProject = listofProjects.length - 1;
+        
+        console.log(newProject);
+
+        return newProject;
+        
     }
+
+
+    //Delete Project
+    function handleDelete() {
+
+    }
+
+    //Edit Project
+    function handleEdit() {
+
+    }
+
+
+    //Create Project task
+    function handleCreateProjectTask() {
+      
+        const projectTaskTitleInput = document.querySelector('.project__task-title-input');
+        const projectTaskDescriptionInput = document.querySelector('.project__task-description-input');
+        const projectTaskPriorityInput = document.querySelector('.project__task-priority-input');
+        const projectTaskDateInput = document.querySelector('.project__task-date-input');
+
+        // Get values
+        let projectTaskTitle = projectTaskTitleInput.value;
+        let projectTaskDescription = projectTaskDescriptionInput.value;
+        let projectTaskPriority = projectTaskPriorityInput.value;
+        let projectTaskDate = projectTaskDateInput.value;
+        
+        
+
+        let newProjectTask = new projectTask(projectTaskTitle, projectTaskDescription, projectTaskPriority, projectTaskDate);
+        console.log("New task created:", newProjectTask);
+
+        allProjectTasks.push(newProjectTask)
+        console.log("Project task created:", allProjectTasks);
+
+        return allProjectTasks;
+
+    }
+
+
+    function handleDisplayProjectTask(projectTask) {
+        let projectTasks = "";
+
+        projectTask.forEach((projectItem) => {
+            projectTasks += `
+                     <div class="task__item">
+                         <div class="task__item-title">
+                             <input type="checkbox" class="isDone" data-id="${projectItem.id}" />
+                             <p>${projectItem.title}</p>
+                         </div>
+             
+                         <div class="task__item-btn">
+                             <button class="btn btn-details" data-id="${projectItem.id}">Details</button>
+                             <div>${format(parseISO(projectItem.date), "MMMM d, yyyy")}</div>
+             
+                             <button class="btn btn-edit" data-source="inbox" data-id="${projectItem.id}">
+                                 <img src="${editIcon}" alt="Edit">
+                             </button>
+             
+                             <button class="btn btn-delete" data-id="${projectItem.id}">
+                                 <img src="${deleteIcon}" alt="Delete">
+                             </button>
+                         </div>
+             
+                         <div class="task-line"></div>
+                     </div>
+                          `;
+        });
+
+
+    }
+
+    //Submit New Project
+    function handleSubmit() {
+        projectForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            handleCreate();
+            formContainer.style.display = "none";
+            projectForm.reset();
+            displayProjectCreated(); 
+        });
+    }
+
+    //Submit New Project Task
+    function handleProjectTaskSubmit(projectForm) {
+    
+        projectForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            handleCreateProjectTask();
+            projectForm.reset();
+            projectForm.style.display = "none";
+            projectAddTaskBtn.style.display = "flex";
+        });
+    }
+
+    
+
+    
 
 
     
 
 
     handleSubmit();
+    addProjectTaskForm();
+ 
 
 export default project;

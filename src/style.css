@@ -585,13 +585,13 @@ select {
  
 
 .project__task-form-container {
-    display: flex;
+    display: none;
     width: 100%;
 }
 
 .project__task-form {
     width: 100%;
-    display: flex;
+    display: none;
     flex-direction: column;
     padding: .75em;
     margin-top: 1rem;
@@ -600,7 +600,7 @@ select {
     gap: 1em;
 }
 
-.project__task-title-input {
+.project__task-title-input, .project__task-description-input {
     width: 100%;
     padding: .25rem;
     background-color: white;

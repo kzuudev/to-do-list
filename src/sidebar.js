@@ -1,7 +1,7 @@
 import todoListParent from "./todo-list.js";
 import today from './today';
 import lastWeek from './lastWeek';
-import project, { projectHeader, projectAdd, projectAddTaskBtn, addProjectTaskForm, projectAddBtn, displayProjectCreated, projectListHeader, projectsHeader, projectMain, projectListDetail, selectedProjectView} from './project.js';
+import project, { projectHeader, projectAdd, projectAddTaskBtn, addProjectTaskForm, projectAddBtn, displayProjectCreated, projectListHeader, projectsHeader, projectMain, projectListDetail, selectedProjectView } from './project.js';
 import './style.css'
 
 function todoList() {

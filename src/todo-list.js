@@ -104,12 +104,12 @@ export function createTaskForm(sectionName = "inbox") {
     priorityTask.required = true;
 
  
-    const placeholderOption = document.createElement("option");
-    placeholderOption.textContent = "Priority";
-    placeholderOption.value = "";
-    placeholderOption.disabled = true;
-    placeholderOption.selected = true;
-    priorityTask.appendChild(placeholderOption);
+    // const placeholderOption = document.createElement("option");
+    // placeholderOption.textContent = "Priority";
+    // placeholderOption.value = "";
+    // placeholderOption.disabled = true;
+    // placeholderOption.selected = true;
+    // priorityTask.appendChild(placeholderOption);
 
     priorityOptions.forEach(option => {
         const options = document.createElement("option");
