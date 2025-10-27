@@ -5,12 +5,13 @@ import editIcon from '../assets/edit.svg';
 import sidebar from './sidebar';
 
     class projectTask {
-        constructor(title, description, priority, date) {
+        constructor(title, description, priority, date, projectName) {
             this.id = Date.now();
             this.title = title;
             this.description = description;
             this.priority = priority;
             this.date = date;
+            this.projectName = projectName;
         }
     }
 
@@ -206,12 +207,14 @@ import sidebar from './sidebar';
     export const selectedProjectView = document.createElement("div");
     selectedProjectView.classList.add("project__selected-view");
 
-    //project CRUD
+    //Projects List
     export let listofProjects = [];
+
+    //Projects Task List
     let allProjectTasks = [];
 
-    //to know which project is currently open
-    // let activeProject = null
+    //Identify which project is currently open
+    let currentActiveProject = null
 
     export function displayProjectCreated() {
 
@@ -257,7 +260,14 @@ import sidebar from './sidebar';
                 projectsList.addEventListener("click", () => {
                     console.log("Clicked project:", listofProjects[index]);
                     projectListHeader.textContent = listofProjects[index];
-                    
+                    currentActiveProject = listofProjects[index];
+
+                    console.log("Current Active Project:", currentActiveProject);
+                    let currentProjectTasks = allProjectTasks.filter(currentProjectTask => 
+                        currentProjectTask.projectName === currentActiveProject
+                    );
+            
+                    console.log(`${currentActiveProject} Tasks:`, currentProjectTasks);
 
                     // Clear previous selected project 
                     selectedProjectView.innerHTML = "";
@@ -268,7 +278,6 @@ import sidebar from './sidebar';
                     
                     // Show selected project details
                     selectedProjectView.style.display = "flex";
-                    console.log(selectedProjectView.isConnected);
 
                     projectListHeader.style.display = "flex";
                     projectAddTaskBtn.style.display = "flex";
@@ -278,6 +287,7 @@ import sidebar from './sidebar';
                     if (checkExistingForm) {
                         checkExistingForm.style.display = "none";
                     }
+
 
                     // Append elements to selectedProjectView 
                     selectedProjectView.appendChild(projectListHeader);
@@ -512,13 +522,20 @@ import sidebar from './sidebar';
         let projectTaskPriority = projectTaskPriorityInput.value;
         let projectTaskDate = projectTaskDateInput.value;
         
-        
-
-        let newProjectTask = new projectTask(projectTaskTitle, projectTaskDescription, projectTaskPriority, projectTaskDate);
+    
+        let newProjectTask = new projectTask(projectTaskTitle, projectTaskDescription, projectTaskPriority, projectTaskDate, currentActiveProject);
         console.log("New task created:", newProjectTask);
 
-        allProjectTasks.push(newProjectTask)
+        allProjectTasks.push(newProjectTask);
         console.log("Project task created:", allProjectTasks);
+
+        console.log(`Task created for: ${currentActiveProject}`);
+
+        allProjectTasks.forEach((projectItem) => {
+            console.log(projectItem);
+            console.log(`this task belong to project:`, projectItem.projectName);
+        });
+
 
         return allProjectTasks;
 
@@ -527,6 +544,8 @@ import sidebar from './sidebar';
 
     function handleDisplayProjectTask(projectTask) {
         let projectTasks = "";
+
+        //display project task based on the currentActiveproject (if the projectName === currentActiveProject);
 
         projectTask.forEach((projectItem) => {
             projectTasks += `
@@ -554,7 +573,7 @@ import sidebar from './sidebar';
                           `;
         });
 
-
+        selectedProjectView.appendChild(projectTask);
     }
 
     //Submit New Project
@@ -577,6 +596,7 @@ import sidebar from './sidebar';
             projectForm.reset();
             projectForm.style.display = "none";
             projectAddTaskBtn.style.display = "flex";
+            
         });
     }
 
