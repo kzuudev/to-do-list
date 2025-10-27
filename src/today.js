@@ -341,9 +341,6 @@ function today() {
         let allTodayTask = '';
         todayListItem.innerHTML = "";
 
-        let storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-
         const isTodayTask = myTodoList.filter((task) =>
             isToday(parseISO(task.date))
         );
