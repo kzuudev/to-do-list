@@ -4,6 +4,7 @@ import exitIcon from '../assets/exit.svg';
 import deleteIcon from '../assets/delete.svg';
 import editIcon from '../assets/edit.svg';
 import sidebar from './sidebar';
+import { myTodoList } from './todo-list';
 
     class projectTask {
         constructor(title, description, priority, date, projectName) {
@@ -178,8 +179,6 @@ import sidebar from './sidebar';
     // Project Edit Parent
     const editProjectTaskDetails = document.createElement("div");
     
-
-
     export const projectListParent = document.createElement("div");
     projectListParent.classList.add("project__list");
 
@@ -217,6 +216,19 @@ import sidebar from './sidebar';
     //Create a DOM for dispalying project taskss
     const selectedProjectTask = document.createElement("div");
     selectedProjectTask.classList.add("project__selected-project-tasks");
+
+    // Project Task Modal
+    const projectTaskModal = document.createElement("div");
+    projectTaskModal.classList.add("project__task-modal");
+
+    const viewProjectTaskModalItem = document.createElement("div");
+    viewProjectTaskModalItem.classList.add("project__task-modal-info");
+
+    const editProjectDetails = document.createElement("div");
+    editProjectDetails.classList.add("project__task-details");
+    
+
+    projectTaskModal.appendChild(viewProjectTaskModalItem);
 
     //Projects List
     export let listofProjects = JSON.parse(localStorage.getItem("project")) || [];
@@ -315,6 +327,7 @@ import sidebar from './sidebar';
                 });
            }); 
           
+           
             
         });
 
@@ -461,8 +474,9 @@ import sidebar from './sidebar';
 
          // Open Project Task Form when the project task button clicked
          projectAddTaskBtn.addEventListener("click", () => {
-            const projectsTasksform = document.querySelector('.project__task-form');
             const projectTasksFormContainer = document.querySelector('.project__task-form-container');
+            const projectsTasksform = document.querySelector('.project__task-form');
+
             if (projectTasksFormContainer && projectsTasksform) {
                 console.log(projectTasksFormContainer);
                 console.log(projectsTasksform);
@@ -581,37 +595,82 @@ import sidebar from './sidebar';
         //display project task based on the currentActiveproject (if the projectName === currentActiveProject);
         displayCurrentProjectTasks.forEach((projectItem) => {
             projectTasks += `
-                     <div class="task__item">
-                         <div class="task__item-title">
+                     <div class="project__task-item">
+                         <div class="project__task-item-title">
                              <input type="checkbox" class="isDone" data-id="${projectItem.id}" />
                              <p>${projectItem.title}</p>
                          </div>
              
-                         <div class="task__item-btn">
-                             <button class="btn btn-details" data-id="${projectItem.id}">Details</button>
+                         <div class="project__task-item-btn">
+                             <button class="btn btn-project-task-details" data-id="${projectItem.id}">Details</button>
                              <div>${format(parseISO(projectItem.date), "MMMM d, yyyy")}</div>
              
-                             <button class="btn btn-edit" data-source="inbox" data-id="${projectItem.id}">
+                             <button class="btn btn-project-task-edit" data-source="project-task" data-id="${projectItem.id}">
                                  <img src="${editIcon}" alt="Edit">
                              </button>
              
-                             <button class="btn btn-delete" data-id="${projectItem.id}">
+                             <button class="btn btn-project-task-delete" data-id="${projectItem.id}">
                                  <img src="${deleteIcon}" alt="Delete">
                              </button>
                          </div>
              
                          <div class="task-line"></div>
                      </div>
-                          `;
+        `;
         });
 
         selectedProjectTask.innerHTML = projectTasks;
         selectedProjectView.appendChild(selectedProjectTask);
 
+
+        handleProjectTaskView();
+
         
     }
 
-    //Submit New Project
+    function handleProjectTaskView() {
+
+        let projectTaskViewDetails = ""
+
+        document.querySelectorAll(".btn-project-task-details").forEach((projectDetailsBtn) => {
+            projectDetailsBtn.addEventListener("click", () => {
+                const projectTaskId = Number(projectDetailsBtn.dataset.id);
+                const projectTask = myTodoList.find(projectTaskItem => projectTaskItem.id === projectTaskId);
+                
+                projectTaskViewDetails = `
+                    <div class="project__task-modal-item">
+                        <div class="btn project__task-btn-exit">
+                            <button class="btn task-btn-exit">
+                                 <img src="${exitIcon}" alt="Exit">
+                            </button>
+                        </div>
+                    
+                            <div class="project__task-modal-title">
+                                <p>${projectTask.title}</p>
+                            </div>
+                                    
+                            <div class="project__task-modal-text">
+                                 <p>Description:  ${projectTask.description}</p>
+                                 <p>Priority:  ${projectTask.priority}</p>
+                                 <p>Due Date:  ${projectTask.date ? format(parseISO(projectTask.date), "MMMM d, yyyy"): "No Due Date"}</p>
+                            </div>
+                     </div>
+                `
+            })
+
+
+            projectTaskModal.style.display = "flex"
+
+            viewProjectTaskModalItem.innerHTML = projectTaskViewDetails;
+
+
+            document.querySelector(".btn-exit").addEventListener("click", () => {
+                projectTaskViewDetails.innerHTML = ""
+            })
+        })
+    }
+
+    // Submit New Project
     function handleSubmit() {
         projectForm.addEventListener("submit", function(event) {
             event.preventDefault();
@@ -622,7 +681,7 @@ import sidebar from './sidebar';
         });
     }
 
-    //Submit New Project Task
+    // Submit New Project Task
     function handleProjectTaskSubmit(projectForm) {
         projectForm.addEventListener("submit", function(event) {
             event.preventDefault();

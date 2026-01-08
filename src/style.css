@@ -214,7 +214,7 @@ select {
 }
 
 
-.task__item {
+.task__item, .project__task-item {
     width: 100%;
     display: flex;
     align-items: center;
@@ -225,7 +225,7 @@ select {
     text-wrap: nowrap;
 }
 
-.task__item-title {
+.task__item-title, .project__task-item-title {
     width: 100%;
     display: flex;
     align-items: center;
@@ -239,7 +239,7 @@ select {
     vertical-align: middle;
 }
 
-.task__item-btn {
+.task__item-btn, .project__task-item-btn {
     width: 100%;
     display: flex;
     align-items: center;
@@ -255,18 +255,18 @@ select {
     cursor: pointer;
 }
 
-.btn-details, .btn__today-details, .btn__lastweek-details {
+.btn-details, .btn__today-details, .btn__lastweek-details, .btn-project-task-details {
     color: var(--green-100);
     background-color: var(--white);
     border: 1px solid var(--green);
 }
 
-.btn-details:hover, .btn__lastweek-details:hover .btn__today-details:hover {
+.btn-details:hover, .btn__lastweek-details:hover .btn__today-details:hover, .btn-project-task-details:hover {
     color: var(--white);
     background-color: var(--green-100);
 }
 
-.btn-delete, .btn-edit, .btn-exit, .btn__today-edit, .btn__today-delete, .btn__lastweek-edit, .btn__lastweek-delete {
+.btn-delete, .btn-edit, .btn-exit, .btn__today-edit, .btn__today-delete, .btn__lastweek-edit, .btn__lastweek-delete, .btn-project-task-details, .btn-project-task-edit, .btn-project-task-delete {
     padding: 0;
     background-color: var(--white);
     color: white;
@@ -334,25 +334,25 @@ select {
     width: 100%;
 }
 
-.task__modal-item, .today-task__modal-item, .last-week-task__modal-item {
+.task__modal-item, .today-task__modal-item, .last-week-task__modal-item, .task__modal-item, .project__task-modal-item{
     width: 100%;
     padding-block: 1rem;
     padding-inline: 0.85rem;
     margin-left: 1rem;
 }
 
-.task__btn-exit {
+.task__btn-exit, .project__task-btn-exit {
    width: 100%;
    display: flex;
    justify-content: flex-end;
 }
 
 
-.task__modal-title {
+.task__modal-title, .project__task-modal-title {
     font-size: var(--font-size-700);
 }
 
-.task__modal-text {
+.task__modal-text, .project__task-modal-text {
     margin-top: 1rem;
 }
 
