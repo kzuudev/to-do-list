@@ -28,6 +28,9 @@ function today() {
     const todayTaskModal = document.createElement("div");
     todayTaskModal.classList.add("task__modal-today");
 
+    const viewTodayTaskInfo = document.createElement("div");
+    viewTodayTaskInfo.classList.add("task__modal-today-info")
+
     const { form, 
             titleTask: todayTitleTask,
             descriptionTask: todayDescriptionTask,
@@ -57,15 +60,14 @@ function today() {
     const editDetails = document.createElement("div");
     editDetails.classList.add("task__details");
 
-     //edit (save & cancel) button 
-     const saveEditBtn = document.createElement("button");
-     saveEditBtn.classList.add("task__details-save");
-     saveEditBtn.textContent = "Save Changes";
+    //edit (save & cancel) button 
+    const saveEditBtn = document.createElement("button");
+    saveEditBtn.classList.add("task__details-save");
+    saveEditBtn.textContent = "Save Changes";
  
-     const cancelEditBtn = document.createElement("button");
-     cancelEditBtn.classList.add("task__details-cancel");
-     cancelEditBtn.textContent = "Cancel";
-
+    const cancelEditBtn = document.createElement("button");
+    cancelEditBtn.classList.add("task__details-cancel");
+    cancelEditBtn.textContent = "Cancel";
 
     taskBtn.appendChild(addIcon);
     addTaskBtn.appendChild(taskBtn);
@@ -177,9 +179,6 @@ function today() {
     function handleViewTask() {
         
         let viewTodayTaskDetails = "";
-   
-            const viewTodayTaskInfo = document.createElement("div");
-            viewTodayTaskInfo.classList.add("task__modal-today-info")
         
             document.querySelectorAll(".btn__today-details").forEach((detailsBtn) => {
                 detailsBtn.addEventListener("click", () => {

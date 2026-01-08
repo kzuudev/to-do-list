@@ -212,6 +212,9 @@ export function createTaskForm(sectionName = "inbox") {
     const taskModal = document.createElement("div");
     taskModal.classList.add("task__modal");
 
+    const viewTaskInfo = document.createElement("div");
+    viewTaskInfo.classList.add("task__modal-info")
+
     const editDetails = document.createElement("div");
     editDetails.classList.add("task__details");
 
@@ -276,9 +279,11 @@ export function createTaskForm(sectionName = "inbox") {
 
      todoListParent.appendChild(addTaskBtn);
      
-     
      todoListTask.appendChild(todoListTaskItem);
      todoListParent.appendChild(todoListTask);
+
+
+
     
 function helper() {
 
@@ -432,9 +437,6 @@ function handleViewTask() {
     
     let viewTaskDetails = "";
 
-    const viewTaskInfo = document.createElement("div");
-    viewTaskInfo.classList.add("task__modal-info")
-
     document.querySelectorAll(".btn-details").forEach((detailsBtn) => {
         detailsBtn.addEventListener("click", () => {
             const taskId = Number(detailsBtn.dataset.id);
@@ -581,8 +583,6 @@ function handleEditTask() {
 }
 
 function handleDeleteTask() {
-
-
     document.querySelectorAll(".btn-delete").forEach((button) => {
         button.onclick = (e) => {
             const taskId = e.currentTarget.dataset.id;
