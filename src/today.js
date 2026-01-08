@@ -1,5 +1,5 @@
-import { isToday, format, parseISO } from 'date-fns';
 import './style.css'
+import { isToday, format, parseISO } from 'date-fns';
 import { myTodoList } from './todo-list.js';
 import deleteIcon from '../assets/delete.svg';
 import editIcon from '../assets/edit.svg';

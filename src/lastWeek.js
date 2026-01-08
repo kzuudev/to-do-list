@@ -1,3 +1,4 @@
+import './style.css'
 import { parseISO, isWithinInterval, subWeeks, startOfWeek, endOfWeek, format} from "date-fns";
 import deleteIcon from '../assets/delete.svg';
 import editIcon from '../assets/edit.svg';
@@ -20,11 +21,11 @@ function lastWeek() {
     const lastWeekListItem = document.createElement("div");
     lastWeekListItem.classList.add("lastweek__list-item");
 
+
     title.textContent = "Last Week"
     
     const lastWeekTaskModal = document.createElement("div");
-    lastWeekTaskModal.classList.add("task__modal");
-
+    lastWeekTaskModal.classList.add("task__modal-lastweek");
 
 
         const {
@@ -54,10 +55,15 @@ function lastWeek() {
       cancelEditBtn.classList.add("task__details-cancel");
       cancelEditBtn.textContent = "Cancel";
 
+      const viewTaskInfo = document.createElement("div");
+      viewTaskInfo.classList.add("task__modal-lastweek-info")
 
-       lastWeekList.appendChild(title);
-       lastWeekList.appendChild(form);
-       form.style.display = "none";
+      lastWeekList.appendChild(title);
+      lastWeekList.appendChild(form);
+      lastWeekList.appendChild(lastWeekListItem);
+      form.style.display = "none";
+
+
 
        function getTaskDate(date) {
         return typeof date === "string" ? parseISO(date) : date;
@@ -68,7 +74,7 @@ function lastWeek() {
         let lastWeekTask = "";
         lastWeekListItem.innerHTML = "";
 
-        //get the date today
+        // get the date today
         const today = new Date();
 
          // Load all tasks from localStorage
@@ -116,8 +122,7 @@ function lastWeek() {
 
 
         lastWeekListItem.innerHTML = lastWeekTask;
-        lastWeekList.appendChild(lastWeekListItem);
-
+        
         handleViewTask();
         handleEditTask();
         handleDeleteTask();
@@ -131,8 +136,6 @@ function lastWeek() {
 
         let viewTaskLastWeekDetails = "";
 
-        const viewTaskInfo = document.createElement("div");
-        viewTaskInfo.classList.add("task__modal-lastweek-info")
 
         document.querySelectorAll(".btn__lastweek-details").forEach((detailsBtn) => {
             detailsBtn.addEventListener("click", () => {
@@ -140,23 +143,23 @@ function lastWeek() {
                 const taskId = Number(detailsBtn.dataset.id);
                 const task = myTodoList.find(taskItem => taskItem.id === taskId);
                 viewTaskLastWeekDetails = `
-                <div class="task__modal-item">
-                        <div class="btn task__btn-exit">
-                            <button class="btn btn-exit">
-                                <img src="${exitIcon}" alt="Exit">
-                            </button>
-                        </div>
+                        <div class="last-week-task__modal-item">
+                                <div class="btn task__btn-exit">
+                                    <button class="btn btn-exit">
+                                        <img src="${exitIcon}" alt="Exit">
+                                    </button>
+                                </div>
 
-                        <div class="task__modal-title">
-                            <p>${task.title}</p>
+                                <div class="task__modal-title">
+                                    <p>${task.title}</p>
+                                </div>
+                        
+                            <div class="task__modal-text">
+                                <p>Description:  ${task.description}</p>
+                                <p>Priority:  ${task.priority}</p>
+                                <p>Due Date:   ${format(parseISO(task.date), "MMMM d, yyyy")}</p>
+                            </div>
                         </div>
-                
-                    <div class="task__modal-text">
-                        <p>Description:  ${task.description}</p>
-                        <p>Priority:  ${task.priority}</p>
-                        <p>Due Date:   ${format(parseISO(task.date), "MMMM d, yyyy")}</p>
-                    </div>
-                </div>
             `
             lastWeekTaskModal.style.display = "flex";
 

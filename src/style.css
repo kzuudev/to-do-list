@@ -255,7 +255,7 @@ select {
     cursor: pointer;
 }
 
-.btn-details, .btn__lastweek-details, .btn__today-details {
+.btn-details, .btn__today-details, .btn__lastweek-details {
     color: var(--green-100);
     background-color: var(--white);
     border: 1px solid var(--green);
@@ -318,8 +318,7 @@ select {
 
 
 
-
-.task__modal, .task__modal-today {
+.task__modal, .task__modal-today, .task__modal-lastweek{
     width: 60%;
     display: none;
     position: absolute;
@@ -331,11 +330,11 @@ select {
     gap: 1rem;
 }
 
-.task__modal-info, .task__modal-today-info {
+.task__modal-info, .task__modal-today-info, .task__modal-lastweek-info {
     width: 100%;
 }
 
-.task__modal-item, .today-task__modal-item {
+.task__modal-item, .today-task__modal-item, .last-week-task__modal-item {
     width: 100%;
     padding-block: 1rem;
     padding-inline: 0.85rem;

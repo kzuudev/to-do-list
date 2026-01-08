@@ -1,4 +1,3 @@
-
 import { parseISO, format } from 'date-fns';
 import './style.css'
 import deleteIcon from '../assets/delete.svg';
@@ -10,7 +9,7 @@ import exitIcon from '../assets/exit.svg';
 export let myTodoList = JSON.parse(localStorage.getItem("tasks")) || [];
 
 // reset the local storage
-localStorage.removeItem("tasks");
+// localStorage.removeItem("tasks");
 
 
 export let currentEditIndex = null;
@@ -21,15 +20,14 @@ export class Task {
         this.title = title;
         this.description = description;
         this.priority = priority;
-        // this.date = date;
-        this.date = typeof date === "string" ? date : "";
+        this.date = date;
     }
 }
 
 export function createTaskForm(sectionName = "inbox") {
 
-    console.log(" createTaskForm() called!"); 
-    console.trace("Called from:");
+    console.log("createTaskForm() called!"); 
+
     
     const formContainer = document.createElement("div");
     formContainer.classList.add("todo__form-wrapper"); 
@@ -312,8 +310,7 @@ function helper() {
         localStorage.setItem("tasks", JSON.stringify(myTodoList));  
         handleDisplayTask(myTodoList); 
         form.reset();
-        form.style.display = "none";
-        // todoListParent.appendChild(addTaskBtn);  
+        form.style.display = "none"; 
     });
 
     document.addEventListener("todayDeletedTask", () => {
@@ -321,7 +318,7 @@ function helper() {
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        // todoListParent.appendChild(addTaskBtn);  
+
     });
 
     document.addEventListener("todayDoneTask", () => {
@@ -329,7 +326,6 @@ function helper() {
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        // todoListParent.appendChild(addTaskBtn);
     })
 
     //it triggers when a task updated, deleted, or done in last week section
@@ -338,7 +334,7 @@ function helper() {
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        // todoListParent.appendChild(addTaskBtn);
+     
     })
 
 
@@ -347,7 +343,7 @@ function helper() {
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        // todoListParent.appendChild(addTaskBtn);
+
     })
 
     document.addEventListener("lastWeekDoneTask", () => {
@@ -355,7 +351,7 @@ function helper() {
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        // todoListParent.appendChild(addTaskBtn);
+
     })
 
 }
