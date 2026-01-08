@@ -9,6 +9,10 @@ import exitIcon from '../assets/exit.svg';
 
 export let myTodoList = JSON.parse(localStorage.getItem("tasks")) || [];
 
+// reset the local storage
+localStorage.removeItem("tasks");
+
+
 export let currentEditIndex = null;
 
 export class Task {
@@ -17,14 +21,14 @@ export class Task {
         this.title = title;
         this.description = description;
         this.priority = priority;
-        this.date = date;
-
+        // this.date = date;
+        this.date = typeof date === "string" ? date : "";
     }
 }
 
 export function createTaskForm(sectionName = "inbox") {
 
-    console.log("🔥 createTaskForm() called!"); 
+    console.log(" createTaskForm() called!"); 
     console.trace("Called from:");
     
     const formContainer = document.createElement("div");
@@ -233,7 +237,6 @@ export function createTaskForm(sectionName = "inbox") {
     const todoListTaskItem = document.createElement("div");
     todoListTaskItem.classList.add("todo__task-item");
 
-
     const addTaskBtn = document.createElement("div");
     addTaskBtn.classList.add("todo__add-task");
 
@@ -271,8 +274,11 @@ export function createTaskForm(sectionName = "inbox") {
     });
  
 
-     todoListParent.appendChild(addTaskBtn); 
-
+     todoListParent.appendChild(addTaskBtn);
+     
+     
+     todoListTask.appendChild(todoListTaskItem);
+     todoListParent.appendChild(todoListTask);
     
 function helper() {
 
@@ -302,7 +308,7 @@ function helper() {
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        todoListParent.appendChild(addTaskBtn);  
+        // todoListParent.appendChild(addTaskBtn);  
     });
 
     document.addEventListener("todayDeletedTask", () => {
@@ -310,7 +316,7 @@ function helper() {
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        todoListParent.appendChild(addTaskBtn);  
+        // todoListParent.appendChild(addTaskBtn);  
     });
 
     document.addEventListener("todayDoneTask", () => {
@@ -318,23 +324,25 @@ function helper() {
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        todoListParent.appendChild(addTaskBtn);
+        // todoListParent.appendChild(addTaskBtn);
     })
 
+    //it triggers when a task updated, deleted, or done in last week section
     document.addEventListener("lastWeekUpdatedTaks", () => {
         localStorage.setItem('tasks', JSON.stringify(myTodoList));
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        todoListParent.appendChild(addTaskBtn);
+        // todoListParent.appendChild(addTaskBtn);
     })
+
 
     document.addEventListener("lastWeekDeletedTask", () => {
         localStorage.setItem('tasks', JSON.stringify(myTodoList));
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        todoListParent.appendChild(addTaskBtn);
+        // todoListParent.appendChild(addTaskBtn);
     })
 
     document.addEventListener("lastWeekDoneTask", () => {
@@ -342,7 +350,7 @@ function helper() {
         handleDisplayTask(myTodoList); 
         form.reset();
         form.style.display = "none";
-        todoListParent.appendChild(addTaskBtn);
+        // todoListParent.appendChild(addTaskBtn);
     })
 
 }
@@ -373,14 +381,16 @@ function handleCreateTask() {
   
 }
 
+
+
+
 export function handleDisplayTask(tasks) {
 
     let task = "";
  
-    todoListTaskItem.innerHTML = "";
-    todoListTask.innerHTML = "";
- 
- 
+    // todoListTask.innerHTML = "";
+    // todoListTaskItem.innerHTML = "";
+
      tasks.forEach((taskItem) => {
          task += `
          <div class="task__item">
@@ -408,14 +418,15 @@ export function handleDisplayTask(tasks) {
      });
  
      todoListTaskItem.innerHTML = task;
-     todoListTask.appendChild(todoListTaskItem);
-     todoListParent.appendChild(todoListTask);
+    //  todoListTask.appendChild(todoListTaskItem);
+    //  todoListParent.appendChild(todoListTask);
  
      handleViewTask();
      handleEditTask();
      handleDeleteTask();
      isDone();
 }
+
 
 function handleViewTask() {
     
@@ -443,7 +454,7 @@ function handleViewTask() {
                     <div class="task__modal-text">
                         <p>Description:  ${task.description}</p>
                         <p>Priority:  ${task.priority}</p>
-                        <p>Due Date:   ${format(parseISO(task.date), "MMMM d, yyyy")}</p>
+                        <p>Due Date:  ${task.date ? format(parseISO(task.date), "MMMM d, yyyy"): "No Due Date"}</p>
                     </div>
                 </div>
             `
@@ -465,7 +476,7 @@ function handleViewTask() {
 }
 
 function handleEditTask() {
-    console.log("handleEditTask called"); // Debug log
+    console.log("handle edit task called");
 
     editTaskDetails.appendChild(saveEditBtn);
     editTaskDetails.appendChild(cancelEditBtn);
@@ -527,11 +538,10 @@ function handleEditTask() {
         };
     });
 
-    // Debug save button
+    // Save Edit Button
     saveEditBtn.onclick = () => {
         console.log("Save edit clicked, currentEditIndex:", currentEditIndex);
-        
-      
+    
             let updatedTaskDetails = new Task(
                 titleTask.value,
                 descriptionTask.value,
@@ -556,13 +566,14 @@ function handleEditTask() {
                 }
             }))
             handleDisplayTask(myTodoList);
-            todoListParent.appendChild(addTaskBtn);  
+            // todoListParent.appendChild(addTaskBtn);  
             form.style.display = "none";
             form.reset();
             addTaskBtn.style.display = "flex";
             
     };
 
+    // Cancel Edit Button
     cancelEditBtn.onclick = () => {
         form.style.display = "none";
         form.reset();

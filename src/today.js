@@ -71,9 +71,10 @@ function today() {
     addTaskBtn.appendChild(taskBtn);
 
     todayList.appendChild(title);
-    todayList.appendChild(addTaskBtn);
     todayList.appendChild(form);
-
+    todayList.appendChild(addTaskBtn);
+    
+    todayList.appendChild(todayListItem);
 
     
     taskBtn.addEventListener("click", () => {
@@ -134,7 +135,7 @@ function today() {
     function handleDisplayTask(task) {
 
         let todayTask = "";
-        todayListItem.innerHTML = "";
+        // todayListItem.innerHTML = "";
 
         task.forEach((taskToday) => {
             todayTask += `
@@ -165,7 +166,7 @@ function today() {
     
     
         todayListItem.innerHTML = todayTask;
-        todayList.appendChild(todayListItem);
+        // todayList.appendChild(todayListItem);
 
         handleEditTask();
         handleViewTask(); 
@@ -199,7 +200,7 @@ function today() {
                             <div class="today task__modal-text">
                                 <p>Description:  ${task.description}</p>
                                 <p>Priority:  ${task.priority}</p>
-                                <p>Due Date:   ${format(parseISO(task.date), "MMMM d, yyyy")}</p>
+                                <p>Due Date:   ${task.date ? format(parseISO(task.date), "MMMM d, yyyy"): "No Due Date"}</p>
                             </div>
                         </div>
                     `
@@ -240,6 +241,7 @@ function today() {
                 editDetails.style.display = "flex";
                 editTaskDetails.style.display = "flex";
                 todayActions.style.display = "none";
+
                 // pre-fill values
                 todayTitleTask.value = myTodoList[currentEditIndex].title;
                 todayDescriptionTask.value = myTodoList[currentEditIndex].description;
@@ -267,6 +269,7 @@ function today() {
             localStorage.setItem("tasks", JSON.stringify(myTodoList));  
             handleDisplayTask(myTodoList);
 
+            // Create a custom event that will broadcast event that a task was created in today section
             document.dispatchEvent(new CustomEvent("todayUpdatedTask", {
                 detail: {
                     task: updatedTaskDetails
@@ -275,7 +278,7 @@ function today() {
 
             form.style.display = "none";
             form.reset();
-            todayList.appendChild(addTaskBtn);
+            // todayList.appendChild(addTaskBtn);
         };
     
         cancelEditBtn.onclick = () => {
@@ -341,6 +344,7 @@ function today() {
         let allTodayTask = '';
         todayListItem.innerHTML = "";
 
+        // only gets the task that has today date
         const isTodayTask = myTodoList.filter((task) =>
             isToday(parseISO(task.date))
         );
@@ -355,7 +359,7 @@ function today() {
                         </div>
         
                         <div class="task__item-btn">
-                            <button class="btn btn-details" data-id="${todayTaskItem.id}">Details</button>
+                            <button class="btn btn__today-details" data-id="${todayTaskItem.id}">Details</button>
                             <div>${format(parseISO(todayTaskItem.date), "MMMM d, yyyy")}</div>
         
                             <button class="btn btn__today-edit" data-source="today" data-id="${todayTaskItem.id}">
@@ -374,14 +378,12 @@ function today() {
     
             // Style adjustments for when tasks are present
             todayListItem.innerHTML = allTodayTask;
-            todayList.appendChild(todayListItem);
             addTaskBtn.style.display = "flex";
             addTaskBtn.style.marginTop = "10px";
             addTaskBtn.style.justifyContent = "flex-start";
             taskBtn.style.backgroundColor = "white";
             taskBtn.style.color = "rgb(158, 158, 158)";
-            addIcon.style.filter = "invert(19%) sepia(46%) saturate(6923%) hue-rotate(2deg) brightness(104%) contrast(73%)";
-            todayList.appendChild(todayListItem);  
+            addIcon.style.filter = "invert(19%) sepia(46%) saturate(6923%) hue-rotate(2deg) brightness(104%) contrast(73%)";  
             todayList.appendChild(addTaskBtn);  
 
              // re-attach events for today

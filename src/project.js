@@ -174,6 +174,12 @@ import sidebar from './sidebar';
         projectForm.reset();
     });
 
+
+    // Project Edit Parent
+    const editProjectTaskDetails = document.createElement("div");
+    
+
+
     export const projectListParent = document.createElement("div");
     projectListParent.classList.add("project__list");
 
@@ -295,7 +301,6 @@ import sidebar from './sidebar';
                     if (checkExistingForm) {
                         checkExistingForm.style.display = "none";
                     }
-
 
                     // Append elements to selectedProjectView 
                     selectedProjectView.appendChild(projectListHeader);
@@ -520,6 +525,7 @@ import sidebar from './sidebar';
     //Edit Project
     function handleEdit() {
 
+       
     }
 
 
@@ -618,7 +624,6 @@ import sidebar from './sidebar';
 
     //Submit New Project Task
     function handleProjectTaskSubmit(projectForm) {
-    
         projectForm.addEventListener("submit", function(event) {
             event.preventDefault();
             handleCreateProjectTask();

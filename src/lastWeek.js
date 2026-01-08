@@ -22,9 +22,10 @@ function lastWeek() {
 
     title.textContent = "Last Week"
     
-
     const lastWeekTaskModal = document.createElement("div");
     lastWeekTaskModal.classList.add("task__modal");
+
+
 
         const {
             form,
@@ -62,7 +63,7 @@ function lastWeek() {
         return typeof date === "string" ? parseISO(date) : date;
     }
 
-    function renderLastWeekTasks() {
+    function handleDisplayLastWeekTasks() {
 
         let lastWeekTask = "";
         lastWeekListItem.innerHTML = "";
@@ -121,7 +122,6 @@ function lastWeek() {
         handleEditTask();
         handleDeleteTask();
         handleCompletedTask();
-        helper();
 
         return lastWeekList;
     }
@@ -211,14 +211,14 @@ function lastWeek() {
             let updatedTaskDetails = new Task(
                 laskWeekTitleTask, lastWeekDescriptionTask, lastWeekPriorityTask, lastWeekDateTask)
 
-                 // preserve the original ID
+                // preserve the original ID
                 updatedTaskDetails.id = myTodoList[currentEditIndex].id;
 
                 myTodoList[currentEditIndex] = updatedTaskDetails;
 
-                // re-render tasks fresh
+                // re-desplay tasks fresh
                 localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-                renderLastWeekTasks();
+                handleDisplayLastWeekTasks();
                 document.dispatchEvent(new CustomEvent("lastWeekUpdatedTask", {
                     detail: {
                         task: updatedTaskDetails
@@ -244,7 +244,7 @@ function lastWeek() {
                 const index = myTodoList.findIndex(task => task.id == taskId);
                 myTodoList.splice(index, 1);
                 localStorage.setItem("tasks", JSON.stringify(myTodoList));
-                renderLastWeekTasks();
+                handleDisplayLastWeekTasks();
 
                 document.dispatchEvent(new CustomEvent("lastWeekDeletedTask", {
                     detail: {
@@ -278,22 +278,26 @@ function lastWeek() {
 
     function helper() {
         document.addEventListener("taskAdded", () => {
-            renderLastWeekTasks();
+            handleDisplayLastWeekTasks();
+        })
+
+        document.addEventListener("todayTaskAdded", () => {
+            handleDisplayLastWeekTasks();
         })
 
         document.addEventListener("taskUpdate", () => {
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
-            renderLastWeekTasks();
+            handleDisplayLastWeekTasks();
         })
 
         document.addEventListener("taskDeleted", () => {
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
-            renderLastWeekTasks();
+            handleDisplayLastWeekTasks();
         })
 
         document.addEventListener("doneTask", () => {
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
-            renderLastWeekTasks();
+            handleDisplayLastWeekTasks();
         })
 
         //it triggers when a task created from today section.
@@ -311,7 +315,7 @@ function lastWeek() {
             handleDisplayTask(myTodoList); 
             form.reset();
             form.style.display = "none";
-            todoListParent.appendChild(addTaskBtn);  
+            // lastWeekList.appendChild(addTaskBtn);  
         });
 
         document.addEventListener("todayDeletedTask", () => {
@@ -319,7 +323,7 @@ function lastWeek() {
             handleDisplayTask(myTodoList); 
             form.reset();
             form.style.display = "none";
-            todoListParent.appendChild(addTaskBtn);  
+            // lastWeekList.appendChild(addTaskBtn);  
         });
 
         document.addEventListener("todayDoneTask", () => {
@@ -327,15 +331,14 @@ function lastWeek() {
             handleDisplayTask(myTodoList); 
             form.reset();
             form.style.display = "none";
-            todoListParent.appendChild(addTaskBtn);
+            // lastWeekList.appendChild(addTaskBtn);
         })
 
     }
 
 
-    renderLastWeekTasks();  
-
-
+    handleDisplayLastWeekTasks();  
+    helper();
 
 
     return lastWeekList;
