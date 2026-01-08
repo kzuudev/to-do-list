@@ -61,6 +61,7 @@ function lastWeek() {
       lastWeekList.appendChild(title);
       lastWeekList.appendChild(form);
       lastWeekList.appendChild(lastWeekListItem);
+      
       form.style.display = "none";
 
 
@@ -288,7 +289,7 @@ function lastWeek() {
             handleDisplayLastWeekTasks();
         })
 
-        document.addEventListener("taskUpdate", () => {
+        document.addEventListener("taskUpdated", () => {
             localStorage.setItem("tasks", JSON.stringify(myTodoList));
             handleDisplayLastWeekTasks();
         })
@@ -315,7 +316,7 @@ function lastWeek() {
         //it triggers when a task updated, deleted, or done in today section
         document.addEventListener("todayUpdatedTask", () => {
             localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-            handleDisplayTask(myTodoList); 
+             handleDisplayLastWeekTasks(); 
             form.reset();
             form.style.display = "none";
             // lastWeekList.appendChild(addTaskBtn);  
@@ -323,7 +324,7 @@ function lastWeek() {
 
         document.addEventListener("todayDeletedTask", () => {
             localStorage.setItem("tasks", JSON.stringify(myTodoList));  
-            handleDisplayTask(myTodoList); 
+            handleDisplayLastWeekTasks();
             form.reset();
             form.style.display = "none";
             // lastWeekList.appendChild(addTaskBtn);  
@@ -331,7 +332,7 @@ function lastWeek() {
 
         document.addEventListener("todayDoneTask", () => {
             localStorage.setItem('tasks', JSON.stringify(myTodoList));
-            handleDisplayTask(myTodoList); 
+            handleDisplayLastWeekTasks(); 
             form.reset();
             form.style.display = "none";
             // lastWeekList.appendChild(addTaskBtn);
