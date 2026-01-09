@@ -560,7 +560,7 @@ import { myTodoList } from './todo-list';
     
         let newProjectTask = new projectTask(projectTaskTitle, projectTaskDescription, projectTaskPriority, projectTaskDate, currentActiveProject);
         console.log("New task created:", newProjectTask);
-        // allProjectTasks.push(newProjectTask);
+
 
         console.log("Project task created:", allProjectTasks);
 
@@ -656,18 +656,20 @@ import { myTodoList } from './todo-list';
                             </div>
                      </div>
                 `
-            })
 
 
-            projectTaskModal.style.display = "flex"
+                projectTaskModal.style.display = "flex"
 
-            viewProjectTaskModalItem.innerHTML = projectTaskViewDetails;
+                viewProjectTaskModalItem.innerHTML = projectTaskViewDetails;
 
 
-            document.querySelector(".btn-exit").addEventListener("click", () => {
-                projectTaskViewDetails.innerHTML = ""
-            })
-        })
+                document.querySelector(".task-btn-exit").addEventListener("click", () => {
+                    projectTaskModal.style.display = "none";
+                    projectTaskViewDetails.innerHTML = ""
+                });
+            });
+
+        });
     }
 
     // Submit New Project

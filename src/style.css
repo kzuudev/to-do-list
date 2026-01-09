@@ -266,17 +266,17 @@ select {
     background-color: var(--green-100);
 }
 
-.btn-delete, .btn-edit, .btn-exit, .btn__today-edit, .btn__today-delete, .btn__lastweek-edit, .btn__lastweek-delete, .btn-project-task-details, .btn-project-task-edit, .btn-project-task-delete {
+.btn-delete, .btn-edit, .btn-exit, .btn__today-edit, .btn__today-delete, .btn__lastweek-edit, .btn__lastweek-delete, .btn-project-task-edit, .btn-project-task-delete {
     padding: 0;
     background-color: var(--white);
     color: white;
 }
 
-.btn-delete img, .btn__today-delete img, .btn__lastweek-delete img {
+.btn-delete img, .btn__today-delete img, .btn__lastweek-delete img, .btn-project-task-delete img {
     width: 21px;
 }
 
-.btn-edit img, .btn__today-edit img, .btn__lastweek-edit img  {
+.btn-edit img, .btn__today-edit img, .btn__lastweek-edit img, .btn-project-task-edit img  {
     width: 18px;
 }
 
@@ -330,11 +330,11 @@ select {
     gap: 1rem;
 }
 
-.task__modal-info, .task__modal-today-info, .task__modal-lastweek-info {
+.task__modal-info, .task__modal-today-info, .task__modal-lastweek-info, .project__task-modal-info {
     width: 100%;
 }
 
-.task__modal-item, .today-task__modal-item, .last-week-task__modal-item, .task__modal-item, .project__task-modal-item{
+.task__modal-item, .today-task__modal-item, .last-week-task__modal-item, .project__task-modal-item{
     width: 100%;
     padding-block: 1rem;
     padding-inline: 0.85rem;
@@ -570,7 +570,7 @@ select {
 
 .project__selected-view {
     width: 100%;
-    display: none;
+    display: flex;
     flex-direction: column;
    
 }

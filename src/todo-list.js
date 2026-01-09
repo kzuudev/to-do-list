@@ -1,5 +1,5 @@
-import { parseISO, format } from 'date-fns';
 import './style.css'
+import { parseISO, format } from 'date-fns';
 import deleteIcon from '../assets/delete.svg';
 import editIcon from '../assets/edit.svg';
 import exitIcon from '../assets/exit.svg';
@@ -9,7 +9,7 @@ import exitIcon from '../assets/exit.svg';
 export let myTodoList = JSON.parse(localStorage.getItem("tasks")) || [];
 
 // reset the local storage
-// localStorage.removeItem("tasks");
+localStorage.removeItem("tasks");
 
 
 export let currentEditIndex = null;
@@ -25,7 +25,7 @@ export class Task {
 }
 
 export function createTaskForm(sectionName = "inbox") {
-
+ 
     console.log("createTaskForm() called!"); 
 
     
