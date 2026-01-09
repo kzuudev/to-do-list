@@ -177,7 +177,7 @@ import { myTodoList } from './todo-list';
 
 
     // Project Edit Parent
-    const editProjectTaskDetails = document.createElement("div");
+    const editProjectDetails = document.createElement("div");
     
     export const projectListParent = document.createElement("div");
     projectListParent.classList.add("project__list");
@@ -213,7 +213,7 @@ import { myTodoList } from './todo-list';
     export const selectedProjectView = document.createElement("div");
     selectedProjectView.classList.add("project__selected-view");
 
-    //Create a DOM for dispalying project taskss
+    //Create a DOM for dispalying project tasks
     const selectedProjectTask = document.createElement("div");
     selectedProjectTask.classList.add("project__selected-project-tasks");
 
@@ -224,20 +224,37 @@ import { myTodoList } from './todo-list';
     const viewProjectTaskModalItem = document.createElement("div");
     viewProjectTaskModalItem.classList.add("project__task-modal-info");
 
-    const editProjectDetails = document.createElement("div");
-    editProjectDetails.classList.add("project__task-details");
+
+    // Project Task Edit
+    const editProjectTask = document.createElement("div");
+    editProjectTask.classList.add("project__task-edit");
+
+    const editProjectTaskItem = document.createElement("div");
+    editProjectTaskItem.classList.add("project__task-edit-item");
+
+    // Project Task Edit Save Button (save & cancel)
+    const projectSaveEditBtn = document.createElement("button");
+    projectSaveEditBtn.classList.add("project__task-edit-save");
+    projectSaveEditBtn.textContent = "Save Changes";
+
+    const projectCancelEditBtn = document.createElement("button");
+    projectCancelEditBtn.classList.add("project__task-edit-cancel");
+    projectCancelEditBtn.textContent = "Cancel";
+
+    editProjectTask.appendChild(editProjectTaskItem);
     
+    editProjectTaskItem.appendChild(projectSaveEditBtn);
+    editProjectTaskItem.appendChild(projectCancelEditBtn);
+
 
     projectTaskModal.appendChild(viewProjectTaskModalItem);
+    // selectedProjectView.appendChild(projectTaskModal);
 
     //Projects List
     export let listofProjects = JSON.parse(localStorage.getItem("project")) || [];
-    // export let listofProjects = [];
-
 
     //Projects Task List
     let allProjectTasks = JSON.parse(localStorage.getItem("projectTask")) || [];
-    // let allProjectTasks = [];
 
     //Identify which project is currently open
     let currentActiveProject = null
@@ -322,7 +339,7 @@ import { myTodoList } from './todo-list';
                     selectedProjectView.appendChild(projectformElements.projectTaskFormContainer);
 
 
-                    handleDisplayProjectTask();
+            
             
                 });
            }); 
@@ -582,12 +599,13 @@ import { myTodoList } from './todo-list';
     }
 
 
+    // Display Project Task
     function handleDisplayProjectTask() {
      
         let projectTasks = "";
         selectedProjectTask.innerHTML = "";
 
-        // Display current project tasks if it's current project task name is equal currentActiveProject
+        // Display current project tasks if it's current project task name is equal currentActiveProject (selected project)
         let displayCurrentProjectTasks = allProjectTasks.filter(currentProjectTask => 
             currentProjectTask.projectName === currentActiveProject
         );
@@ -623,20 +641,22 @@ import { myTodoList } from './todo-list';
         selectedProjectView.appendChild(selectedProjectTask);
 
 
-        handleProjectTaskView();
+        handleViewProjectTask();
 
         
     }
 
-    function handleProjectTaskView() {
+    // View Project Task
+    function handleViewProjectTask() {
 
         let projectTaskViewDetails = ""
 
         document.querySelectorAll(".btn-project-task-details").forEach((projectDetailsBtn) => {
             projectDetailsBtn.addEventListener("click", () => {
                 const projectTaskId = Number(projectDetailsBtn.dataset.id);
-                const projectTask = myTodoList.find(projectTaskItem => projectTaskItem.id === projectTaskId);
-                
+                const projectTask = allProjectTasks.find(projectTaskItem => projectTaskItem.id === projectTaskId);
+                console.log("This project task view clicked!");
+
                 projectTaskViewDetails = `
                     <div class="project__task-modal-item">
                         <div class="btn project__task-btn-exit">
@@ -662,15 +682,33 @@ import { myTodoList } from './todo-list';
 
                 viewProjectTaskModalItem.innerHTML = projectTaskViewDetails;
 
-
                 document.querySelector(".task-btn-exit").addEventListener("click", () => {
                     projectTaskModal.style.display = "none";
-                    projectTaskViewDetails.innerHTML = ""
+                    viewProjectTaskModalItem.innerHTML = "";
                 });
+
             });
 
         });
+
+
+        projectTaskModal.appendChild(viewProjectTaskModalItem);
+
+        selectedProjectView.appendChild(projectTaskModal);
+
+
+        
     }
+
+    // Edit Project Task
+    function handleEditProjectTask() {
+
+        edit
+
+    }
+
+    function handleDeleteProjectTask() {}
+    // Delete Project Task
 
     // Submit New Project
     function handleSubmit() {
@@ -698,12 +736,9 @@ import { myTodoList } from './todo-list';
 
     
 
-
-    
-
-
     handleSubmit();
     addProjectTaskForm();
- 
+    handleDisplayProjectTask();
+
 
 export default project;

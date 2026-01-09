@@ -266,7 +266,7 @@ select {
     background-color: var(--green-100);
 }
 
-.btn-delete, .btn-edit, .btn-exit, .btn__today-edit, .btn__today-delete, .btn__lastweek-edit, .btn__lastweek-delete, .btn-project-task-edit, .btn-project-task-delete {
+.btn-delete, .btn-edit, .btn-exit, .btn__today-edit, .btn__today-delete, .btn__lastweek-edit, .btn__lastweek-delete, .btn-project-task-edit, .btn-project-task-delete, .task-btn-exit{
     padding: 0;
     background-color: var(--white);
     color: white;
@@ -280,11 +280,11 @@ select {
     width: 18px;
 }
 
-.btn-delete img:hover, .btn__today-delete img:hover, .btn__lastweek-delete img:hover {
+.btn-delete img:hover, .btn__today-delete img:hover, .btn__lastweek-delete img:hover, .btn-project-task-delete img:hover{
     filter: invert(19%) sepia(46%) saturate(6923%) hue-rotate(2deg) brightness(104%) contrast(73%)
 }
 
-.btn-edit img:hover, .btn__today-edit:hover, .btn__lastweek-edit:hover {
+.btn-edit img:hover, .btn__today-edit img:hover, .btn__lastweek-edit img:hover, .btn-project-task-edit img:hover {
     filter: invert(26%) sepia(94%) saturate(1775%) hue-rotate(131deg) brightness(99%) contrast(95%);
 }
 
@@ -318,7 +318,7 @@ select {
 
 
 
-.task__modal, .task__modal-today, .task__modal-lastweek{
+.task__modal, .task__modal-today, .task__modal-lastweek, .project__task-modal{
     width: 60%;
     display: none;
     position: absolute;
