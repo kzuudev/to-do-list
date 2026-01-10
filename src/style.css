@@ -288,12 +288,12 @@ select {
     filter: invert(26%) sepia(94%) saturate(1775%) hue-rotate(131deg) brightness(99%) contrast(95%);
 }
 
-.task__details {
+.task__details, .project__task-edit{
     display: none;
     justify-content: flex-end;
 }
 
-.task__details-edit {
+.task__details-edit, .project__task-edit-item {
     display: none;
     gap: 1rem;
 }

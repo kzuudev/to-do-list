@@ -232,21 +232,26 @@ import { myTodoList } from './todo-list';
     const editProjectTaskItem = document.createElement("div");
     editProjectTaskItem.classList.add("project__task-edit-item");
 
+    const editProjectAction = document.createElement("div");
+    editProjectAction.classList.add("project__task-edit-action")
+
     // Project Task Edit Save Button (save & cancel)
     const projectSaveEditBtn = document.createElement("button");
     projectSaveEditBtn.classList.add("project__task-edit-save");
+    projectSaveEditBtn.type = "submit";
     projectSaveEditBtn.textContent = "Save Changes";
 
     const projectCancelEditBtn = document.createElement("button");
     projectCancelEditBtn.classList.add("project__task-edit-cancel");
     projectCancelEditBtn.textContent = "Cancel";
 
-    editProjectTask.appendChild(editProjectTaskItem);
     
-    editProjectTaskItem.appendChild(projectSaveEditBtn);
-    editProjectTaskItem.appendChild(projectCancelEditBtn);
+    editProjectAction.appendChild(projectSaveEditBtn);
+    editProjectAction.appendChild(projectCancelEditBtn);
+    editProjectTaskItem.appendChild(editProjectAction);
+    editProjectTask.appendChild(editProjectTaskItem);
 
-
+    
     projectTaskModal.appendChild(viewProjectTaskModalItem);
     // selectedProjectView.appendChild(projectTaskModal);
 
@@ -258,6 +263,8 @@ import { myTodoList } from './todo-list';
 
     //Identify which project is currently open
     let currentActiveProject = null
+
+    const projectformElements = addProjectTaskForm();
 
     export function displayProjectCreated() {
 
@@ -313,7 +320,7 @@ import { myTodoList } from './todo-list';
                     console.log(`${currentActiveProject} Tasks:`, currentProjectTasks);
 
                     // Clear previous selected project 
-                    selectedProjectView.innerHTML = "";
+                    // selectedProjectView.innerHTML = "";
 
                     // Hide main "My Projects" view
                     projectMain.style.display = "none";
@@ -334,8 +341,6 @@ import { myTodoList } from './todo-list';
                     // Append elements to selectedProjectView 
                     selectedProjectView.appendChild(projectListHeader);
                     selectedProjectView.appendChild(projectAddTaskBtn);
-
-                    const projectformElements = addProjectTaskForm();
                     selectedProjectView.appendChild(projectformElements.projectTaskFormContainer);
 
 
@@ -353,7 +358,6 @@ import { myTodoList } from './todo-list';
         projectAdd.appendChild(projectListParent);
        
     }
-    
     
     
     export function addProjectTaskForm() {
@@ -486,23 +490,25 @@ import { myTodoList } from './todo-list';
         projectTaskForm.appendChild(projectTaskDescriptionParent);
         projectTaskForm.appendChild(projectTaskPriorityDateParent);
         projectTaskForm.appendChild(projectTaskActionsParent);
+        projectTaskForm.appendChild(editProjectTask);
         projectTaskFormContainer.appendChild(projectTaskForm);
         
 
          // Open Project Task Form when the project task button clicked
          projectAddTaskBtn.addEventListener("click", () => {
-            const projectTasksFormContainer = document.querySelector('.project__task-form-container');
-            const projectsTasksform = document.querySelector('.project__task-form');
+            // const projectTasksFormContainer = document.querySelector('.project__task-form-container');
+            // const projectsTasksform = document.querySelector('.project__task-form');
 
-            if (projectTasksFormContainer && projectsTasksform) {
-                console.log(projectTasksFormContainer);
-                console.log(projectsTasksform);
+            if (projectTaskFormContainer && projectTaskForm) {
+                console.log(projectTaskFormContainer);
+                console.log(projectTaskForm);
                 console.log(document.querySelectorAll('.project__task-form-container').length);
-                projectTasksFormContainer.style.display = "flex";
-                projectsTasksform.style.display = "flex";
+                projectTaskFormContainer.style.display = "flex";
+                projectTaskForm.style.display = "flex";
                 projectAddTaskBtn.style.display = "none";
             }
         });
+
 
         projectTaskCancel.addEventListener("click", () => {
             projectTaskForm.reset();
@@ -520,8 +526,8 @@ import { myTodoList } from './todo-list';
             projectTaskTitleInput: projectTaskTitleInput,
             projectTaskDescriptionInput: projectTaskDescriptionInput,
             projectTaskPriorityInput: projectTaskPriorityInput,
-            projectTaskDateInput: projectTaskDateInput
-
+            projectTaskDateInput: projectTaskDateInput,
+            projectTaskActionsParent: projectTaskActionsParent,
 
         }
         
@@ -558,6 +564,8 @@ import { myTodoList } from './todo-list';
 
        
     }
+
+
 
 
     //Create Project task
@@ -642,7 +650,7 @@ import { myTodoList } from './todo-list';
 
 
         handleViewProjectTask();
-
+        handleEditProjectTask();
         
     }
 
@@ -703,7 +711,37 @@ import { myTodoList } from './todo-list';
     // Edit Project Task
     function handleEditProjectTask() {
 
-        edit
+        document.querySelectorAll(".btn-project-task-edit").forEach((projectEditBtn) => {
+            projectEditBtn.onclick = () => {
+                console.log("project task edit button clicked!")
+                const source = projectEditBtn.dataset.source
+
+                let projectTaskId = Number(projectEditBtn.dataset.id)
+                const projectTaskIndex = allProjectTasks.findIndex(task => task.id === projectTaskId)
+
+                projectformElements.projectTaskFormContainer.style.display = "flex";
+                projectformElements.projectTaskForm.style.display = "flex";
+                editProjectTaskItem.style.display = "flex";
+                editProjectAction.style.display = "flex";
+
+                //pre-fill values
+                projectformElements.projectTaskTitleInput.value = allProjectTasks[projectTaskIndex].title;
+                projectformElements.projectTaskDescriptionInput.value = allProjectTasks[projectTaskIndex].description;
+                projectformElements.projectTaskPriorityInput.value = allProjectTasks[projectTaskIndex].priority;
+                projectformElements.projectTaskDateInput.value = allProjectTasks[projectTaskIndex].date; 
+
+                editProjectTask.style.display = "flex";
+                projectformElements.projectTaskActionsParent.style.display = "none";
+
+                // Debug the pre-filled values
+                console.log("Pre-filled values:");
+                console.log("Title:", projectformElements.projectTaskTitleInput.value);
+                console.log("Description:", projectformElements.projectTaskDescriptionInput.value);
+                console.log("Priority:", projectformElements.projectTaskPriorityInput.value);
+                console.log("Date:", projectformElements.projectTaskDateInput.value);
+
+            }
+        })
 
     }
 
@@ -737,7 +775,6 @@ import { myTodoList } from './todo-list';
     
 
     handleSubmit();
-    addProjectTaskForm();
     handleDisplayProjectTask();
 
 

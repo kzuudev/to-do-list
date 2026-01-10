@@ -495,7 +495,6 @@ function handleEditTask() {
         console.log(`Found edit button ${index}:`, editBtn);
         
         editBtn.onclick = () => {  
-            console.log("Edit button clicked!"); // Debug log
             const source = editBtn.dataset.source;
             console.log("Edit button source:", source);
 
@@ -503,26 +502,16 @@ function handleEditTask() {
             console.log("Task ID:", taskId); // Debug log
             
             const taskIndex = myTodoList.findIndex(task => task.id === taskId);
-            console.log("Task Index:", taskIndex); // Debug log
             currentEditIndex = taskIndex;
-
-            // Check how many forms exist
-            const allForms = document.querySelectorAll('.inbox__form');
-            console.log("Number of inbox forms found:", allForms.length);
 
             form.style.display = "flex";
             editDetails.style.display = "flex";
             editTaskDetails.style.display = "flex";
             inboxActions.style.display = "none";
 
-            // Debug: Check if styles were applied
-            console.log("form display:", form.style.display);
-
-            console.log("editDetails display:", editDetails.style.display);
-
             // pre-fill values
             titleTask.value = myTodoList[currentEditIndex].title;
-            descriptionTask.value = myTodoList[currentEditIndex].description;
+            descriptionTask.value = myTodsoList[currentEditIndex].description;
             priorityTask.value = myTodoList[currentEditIndex].priority;
             dateTask.value = myTodoList[currentEditIndex].date;
             
